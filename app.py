@@ -166,6 +166,12 @@ def stories():
         u = flask_login.current_user.data['firstName']
     return render_template("stories.html", username = u)
 
+@app.route('/book')
+def book():
+    u = None
+    if hasattr(flask_login.current_user, "data"):
+        u = flask_login.current_user.data['firstName']
+    return render_template("book.html", username = u)
 
 @app.route('/logout')
 @flask_login.login_required
