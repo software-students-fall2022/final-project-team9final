@@ -18,7 +18,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
           pip install flask
-          if [ -f ./web-app/requirements.txt ]; then pip install -r ./web-app/requirements.txt; fi 
+          if [ -f /requirements.txt ]; then pip install -r /requirements.txt; fi 
       - name: Test with pytest
         run: |
           python -m pytest web-app/tests
