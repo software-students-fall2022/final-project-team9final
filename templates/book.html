@@ -18,7 +18,7 @@
     <div class = "open-back-cover">
     </div>
 </div>
-{% if page < last_page %}
+{% if page < last_page-1 %}
 <form action="/book" method="get">
     <button type="submit" name="page" value={{page+1}} class="next">&raquo;</button>
 </form>
