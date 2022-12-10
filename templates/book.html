@@ -1,15 +1,27 @@
 {% extends 'base.html' %}
 {% block container %}
+{% if page >0 %}
+<form action="/book" method="get">
+    <button type="submit" name="page" value={{page-1}} class="prev">&laquo;</button>
+</form>
+{% endif %}
 <div class = "open-book">
     <div class ="open-cover"></div>
     <div class = "left-page"></div>
     <div class = "right-page">
-        <h1>content</h1>
+        <br>
+        <h1>{{content}}</h1>
     </div>
     <div class = "flip-page">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
+        <img src= {{url}}>
     </div>
     <div class = "open-back-cover">
     </div>
 </div>
-{% endblock %}
+{% if page < last_page %}
+<form action="/book" method="get">
+    <button type="submit" name="page" value={{page+1}} class="next">&raquo;</button>
+</form>
+{% endif %}
+
+  {% endblock %}

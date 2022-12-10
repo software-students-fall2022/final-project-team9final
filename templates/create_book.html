@@ -2,7 +2,13 @@
 {% block container %}
 <div class = "close-book">
     <div class = "close-front-cover" >
-        <form action="/create-book">
+        {% if title %}
+        <br><br>
+        <form action="/create-book" method="post">
+            <button type="submit" name="create-story" class="btn-link">Add {{title}} To My Collection!</button>
+        </form>
+      {% endif %}
+        <form action="/create-book" method="get">
             <label for="fname">Enter A Prompt: </label>
             <input type="text" id="prompt" name="prompt"><br><br>
             <input type="submit" value="Submit">
@@ -10,6 +16,8 @@
     </div>
 </div>
 <div class = "story">
-{{story}}
+    {% for sentence in story %}
+    {{ sentence }}
+    {% endfor %}
 </div>
 {% endblock %}
