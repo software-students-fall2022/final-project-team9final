@@ -15,10 +15,11 @@ from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 import random
 import json
+import openai
 
 app = Flask(__name__)
 app.secret_key = urandom(32)
-
+openai.api_key = os.getenv("OPENAI_API_KEY")
 config = dotenv_values(".env")
 
 # connect to the database
@@ -172,6 +173,27 @@ def book():
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
     return render_template("book.html", username = u)
+
+@app.route('/create-book')
+def create_book():
+    u = None
+    if hasattr(flask_login.current_user, "data"):
+        u = flask_login.current_user.data['firstName']
+    
+    prompt = request.args.get('prompt')
+    story= "Enter Prompt To Generate Story!"
+    if(prompt != None):
+        response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=f"Topic: {prompt}",
+        temperature=0.8,
+        max_tokens=60,
+        top_p=1.0,
+        frequency_penalty=0.5,
+        presence_penalty=0.0
+        )
+        story = response["choices"][0]["text"]
+    return render_template("create_book.html", username = u, story=story)
 
 @app.route('/logout')
 @flask_login.login_required

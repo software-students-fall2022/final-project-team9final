@@ -103,7 +103,7 @@ body{
     margin-right: 250px;
     margin-top: 50px;
     margin-bottom: 300px;
-    cursor: pointer;
+    cursor: default;
 }
 
 .open-cover{
@@ -115,7 +115,6 @@ body{
     box-shadow: 1px 1px 10px gray;
     transform: rotateX(10deg); 
     color:white;
-    transform-origin: center left;
     z-index: -1;
 }
 .open-back-cover{
@@ -178,6 +177,44 @@ body{
     transform: scaleX(-1);
     visibility: hidden;
 }
+.close-book{
+    align-items: center;
+    text-align: center;
+    cursor: default;
+}
+
+.close-front-cover{
+    height:850px;
+    width: 700px;
+    background: #654321;
+    border-radius: 2px 20px 20px 2px;
+    position: relative;
+    box-shadow: 1px 1px 10px gray;
+    transform: rotateX(10deg); 
+    color:white;
+    margin-top: 50px;
+    margin-left: 200px
+}
+
+label{
+    margin-top: 300px;
+}
+input[type=text] {
+    width: 90%;
+    padding: 12px 20px;
+    margin: 8px 0;    
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  
+.story{
+    width:40%;
+    position:absolute;
+    display:grid;
+    right:100px;
+    top:150px;
+    line-height:50px;
+}
 
 @keyframes flipPage 
 {
@@ -188,3 +225,4 @@ body{
     99% {visibility: hidden;}
     100% {visibility: visible;}
   }
+  
