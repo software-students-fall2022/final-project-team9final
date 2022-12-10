@@ -181,7 +181,7 @@ def book():
     )
     image_url = response['data'][0]['url']
 
-    return render_template("book.html", username = u, url = image_url, content = session["story"][page])
+    return render_template("book.html", username = u, url = image_url, content = session["story"][page], page = page, last_page = len(session["story"]))
 
 @app.route('/create-book', methods = ['GET', 'POST'])
 def create_book():

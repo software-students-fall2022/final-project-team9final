@@ -217,7 +217,22 @@ input[type=text] {
 
 }
 
-
+.next{
+    border-radius: 30%;
+    position:absolute;
+    right:100px;
+    text-decoration: none;
+    font-size:150px;
+    top:400px;
+}
+.prev{
+    border-radius: 30%;
+    position:absolute;
+    left:100px;
+    text-decoration: none;
+    font-size:150px;
+    top:400px;
+}
 @keyframes flipPage 
 {
     from { transform: rotateX(0deg) rotateY(0deg);}
