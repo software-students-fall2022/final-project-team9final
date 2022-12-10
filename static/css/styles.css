@@ -210,11 +210,13 @@ input[type=text] {
 .story{
     width:40%;
     position:absolute;
-    display:grid;
     right:100px;
-    top:150px;
+    top:50px;
     line-height:50px;
+    white-space: pre-line;
+
 }
+
 
 @keyframes flipPage 
 {

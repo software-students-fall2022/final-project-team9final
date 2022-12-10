@@ -172,28 +172,44 @@ def book():
     u = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
-    return render_template("book.html", username = u)
+    
+    page = request.args.get('page', default = 0, type=int)
+    response = openai.Image.create(
+    prompt = session["story"][page],
+    n=1,
+    size="1024x1024"
+    )
+    image_url = response['data'][0]['url']
 
-@app.route('/create-book')
+    return render_template("book.html", username = u, url = image_url, content = session["story"][page])
+
+@app.route('/create-book', methods = ['GET', 'POST'])
 def create_book():
     u = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
     
+    if request.method == 'POST':
+        db.users.updateOne({"username": flask_login.current_user.data['_id']}, {'$push' : {'stories' : { 'story' : session["story"], 'title' : session["title"]}}})
+        return(redirect(url_for("stories")))
+
     prompt = request.args.get('prompt')
-    story= "Enter Prompt To Generate Story!"
+    session["story"] = ["Enter Prompt To Generate Story!"]
+    session["title"] = None
     if(prompt != None):
         response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f"Topic: {prompt}",
+        prompt=f"Give a title with a story about {prompt}",
         temperature=0.8,
-        max_tokens=60,
+        max_tokens=2048,
         top_p=1.0,
         frequency_penalty=0.5,
         presence_penalty=0.0
         )
-        story = response["choices"][0]["text"]
-    return render_template("create_book.html", username = u, story=story)
+        session["title"] = response["choices"][0]["text"].split("\n\n")[1]
+        session["story"] = response["choices"][0]["text"].split("\n\n")[2:]
+
+    return render_template("create_book.html", username = u, story=session["story"], title=session["title"])
 
 @app.route('/logout')
 @flask_login.login_required
