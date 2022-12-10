@@ -193,7 +193,7 @@ body{
     transform: rotateX(10deg); 
     color:white;
     margin-top: 50px;
-    margin-left: 200px
+    margin-left: 200px;    
 }
 
 label{
@@ -202,7 +202,6 @@ label{
 input[type=text] {
     width: 90%;
     padding: 12px 20px;
-    margin: 8px 0;    
     justify-content: center;
     box-sizing: border-box;
   }
@@ -211,10 +210,12 @@ input[type=text] {
     width:40%;
     position:absolute;
     right:100px;
-    top:50px;
+    top:100px;
+    font-size:27px;
+    overflow:scroll;
+    height: 850px;
     line-height:50px;
-    white-space: pre-line;
-
+    text-overflow:ellipsis;
 }
 
 .next{
@@ -232,6 +233,12 @@ input[type=text] {
     text-decoration: none;
     font-size:150px;
     top:400px;
+}
+.add_book{
+    width : 90%;
+    margin-top: 20px;
+    font-size: 50px;
+    background-color: burlywood;
 }
 @keyframes flipPage 
 {

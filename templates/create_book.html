@@ -5,7 +5,7 @@
         {% if title %}
         <br><br>
         <form action="/create-book" method="post">
-            <button type="submit" name="create-story" class="btn-link">Add {{title}} To My Collection!</button>
+            <button type="submit" name="create-story" class="add_book">{{title}}</button>
         </form>
       {% endif %}
         <form action="/create-book" method="get">
