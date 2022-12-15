@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 {% block container %}
-<div class = "shared-book">
+
+{%for book in books%}
+<form action="/book" method="post">
+    <button class = "shared-book" name= "id" id= "id" value = "{{ book._id }}">
     <div class ="front-cover">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
-        <h1>Title</h1>
+        <h1>{{ book.title }}</h1>
     </div>
     <div class = "page"></div>
     <div class = "page"></div>
@@ -14,130 +16,7 @@
         <h1>READ ME!</h1>
     </div>
 </div>
-<div class = "shared-book">
-    <div class ="front-cover">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
-        <h1>Title</h1>
-    </div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "back-cover">
-        <h1>READ ME!</h1>
-    </div>
-</div>
-<div class = "shared-book">
-    <div class ="front-cover">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
-        <h1>Title</h1>
-    </div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "back-cover">
-        <h1>READ ME!</h1>
-    </div>
-</div>
-<div class = "shared-book">
-    <div class ="front-cover">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
-        <h1>Title</h1>
-    </div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "back-cover">
-        <h1>READ ME!</h1>
-    </div>
-</div>
-<div class = "shared-book">
-    <div class ="front-cover">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
-        <h1>Title</h1>
-    </div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "back-cover">
-        <h1>READ ME!</h1>
-    </div>
-</div>
-<div class = "shared-book">
-    <div class ="front-cover">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
-        <h1>Title</h1>
-    </div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "back-cover">
-        <h1>READ ME!</h1>
-    </div>
-</div>
-<div class = "shared-book">
-    <div class ="front-cover">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
-        <h1>Title</h1>
-    </div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "back-cover">
-        <h1>READ ME!</h1>
-    </div>
-</div>
-<div class = "shared-book">
-    <div class ="front-cover">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
-        <h1>Title</h1>
-    </div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "back-cover">
-        <h1>READ ME!</h1>
-    </div>
-</div>
-<div class = "shared-book">
-    <div class ="front-cover">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
-        <h1>Title</h1>
-    </div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "back-cover">
-        <h1>READ ME!</h1>
-    </div>
-</div>
-<div class = "shared-book">
-    <div class ="front-cover">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg">
-        <h1>Title</h1>
-    </div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "page"></div>
-    <div class = "back-cover">
-        <h1>READ ME!</h1>
-    </div>
-</div>
+</form>
+{%endfor%}
+
 {% endblock %}

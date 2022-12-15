@@ -163,22 +163,29 @@ def register():
 def stories():
     u = None
     # print(flask_login.current_user, file=sys.stderr)
+    shared_books = db.books.find({"shared": True})
+
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
-    print(u, file=sys.stderr)
-    return render_template("stories.html", username = u)
+        print(u, file=sys.stderr)
 
-@app.route('/book')
+    return render_template("stories.html", username = u, books = shared_books)
+
+@app.route('/book', methods = ['POST'])
 def book():
     u = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
 
+    book_id = request.form['id']
+    book = db.books.find_one({"_id" : ObjectId(book_id)})
+    session["story"] = book["story"]
+
     page = request.args.get('page', default = 0, type=int)
     response = openai.Image.create(
     prompt = session["story"][page],
     n=1,
-    size="1024x1024"
+    size="256x256"
     )
     image_url = response['data'][0]['url']
 
@@ -190,8 +197,9 @@ def create_book():
     u = flask_login.current_user.data['firstName']
 
     if request.method == 'POST':
-        db.users.updateOne({"username": flask_login.current_user.data['_id']}, {'$push' : {'stories' : { 'story' : session["story"], 'title' : session["title"]}}})
-        return(redirect(url_for("stories")))
+        _id = db.books.insert_one({"title": session["title"], 'story': session["story"], 'shared' : False})
+        db.users.update_one({"_id": flask_login.current_user.data['_id']}, {'$push' : {'stories' : ObjectId(_id.inserted_id)}})
+        return(redirect(url_for("private")))
 
     prompt = request.args.get('prompt')
     session["story"] = ["Enter Prompt To Generate Story!"]
@@ -235,8 +243,12 @@ def private():
     #     )
     #     session["title"] = response["choices"][0]["text"].split("\n\n")[1]
     #     session["story"] = response["choices"][0]["text"].split("\n\n")[2:]
-
-    return render_template("private.html", username = u)
+    private_books = db.users.find_one({"_id": flask_login.current_user.data['_id']}, {"_id" : 0, "stories" : 1})['stories']
+    books = []
+    for book_id in private_books:
+        book = db.books.find_one({"_id" : book_id})
+        books.append(book)
+    return render_template("private.html", username = u, books = books)
 
 @app.route('/logout')
 @flask_login.login_required
