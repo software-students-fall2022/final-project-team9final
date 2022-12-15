@@ -242,6 +242,37 @@ input[type=text] {
     font-size: 50px;
     background-color: burlywood;
 }
+.private_button{
+    display: inline-block;
+    margin-top: 50px;
+}
+
+.delete_button{
+    background-color: red;
+    width: 100px;
+    height:30px;
+    margin-left: 350px;
+    position:absolute;
+    margin-bottom: 20px
+}
+
+.share_button{
+    background-color: green;
+    width: 100px;
+    height:30px;
+    margin-left: 450px;
+    position:absolute;
+    margin-bottom: 20px;
+}
+.unshare_button{
+    background-color: orange;
+    width: 100px;
+    height:30px;
+    margin-left: 450px;
+    position:absolute;
+    margin-bottom: 20px;
+}
+
 @keyframes flipPage
 {
     from { transform: rotateX(0deg) rotateY(0deg);}

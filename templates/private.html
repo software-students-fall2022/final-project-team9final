@@ -1,4 +1,37 @@
 {% extends 'base.html' %}
 {% block container %}
-This page should list all of the logged in user's stories and whether they are public or private with the function to public or private their stories
+
+{%for book in books%}
+<div class = "private_button">
+<form action="/delete" method="post">
+    <button class = "delete_button" name= "id" id= "id" value = "{{ book._id }}">Delete</button>
+</form>
+{% if book.shared %}
+<form action="/unshare" method="post">
+    <button class = "unshare_button" name= "id" id= "id" value = "{{ book._id }}">Unshare</button>
+</form>
+{% else %}
+<form action="/share" method="post">
+    <button class = "share_button" name= "id" id= "id" value = "{{ book._id }}">Share</button>
+</form>
+{% endif %}
+<form action="/book" method="post">
+    <button class = "shared-book" name= "id" id= "id" value = "{{ book._id }}">
+    <div class ="front-cover">
+        <br>
+        <h1>{{ book.title }}</h1>
+    </div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "back-cover">
+        <br><br><br><br><br>
+        <h1>READ ME!</h1>
+    </div>
+</div>
+</form>
+</div>
+{%endfor%}
 {% endblock %}
