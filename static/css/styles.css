@@ -38,7 +38,7 @@ body{
     border-radius: 2px 20px 20px 2px;
     position: absolute;
     box-shadow: 1px 1px 10px gray;
-    transform: rotateX(10deg); 
+    transform: rotateX(10deg);
     color:white;
     transform-origin: center left;
 }
@@ -113,7 +113,7 @@ body{
     border-radius: 20px 2px 2px 20px;
     position: relative;
     box-shadow: 1px 1px 10px gray;
-    transform: rotateX(10deg); 
+    transform: rotateX(10deg);
     color:white;
     z-index: -1;
 }
@@ -124,7 +124,7 @@ body{
     border-radius: 2px 20px 20px 2px;
     position: relative;
     box-shadow: 1px 1px 10px gray;
-    transform: rotateX(10deg); 
+    transform: rotateX(10deg);
     color:white;
     transform-origin: center left;
     z-index: -1;
@@ -190,22 +190,24 @@ body{
     border-radius: 2px 20px 20px 2px;
     position: relative;
     box-shadow: 1px 1px 10px gray;
-    transform: rotateX(10deg); 
+    transform: rotateX(10deg);
     color:white;
     margin-top: 50px;
-    margin-left: 200px;    
+    margin-left: 200px;
 }
 
-label{
+
+.with-top-margin{
     margin-top: 300px;
 }
+
 input[type=text] {
     width: 90%;
     padding: 12px 20px;
     justify-content: center;
     box-sizing: border-box;
   }
-  
+
 .story{
     width:40%;
     position:absolute;
@@ -240,7 +242,7 @@ input[type=text] {
     font-size: 50px;
     background-color: burlywood;
 }
-@keyframes flipPage 
+@keyframes flipPage
 {
     from { transform: rotateX(0deg) rotateY(0deg);}
     to { transform: rotateX(10deg) rotateY(-180deg);}
@@ -249,4 +251,3 @@ input[type=text] {
     99% {visibility: hidden;}
     100% {visibility: visible;}
   }
-  

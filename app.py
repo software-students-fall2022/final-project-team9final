@@ -106,7 +106,6 @@ def login():
     Processes login and redirects accordingly if request was made
     Otherwise display login form
     """
-
     # if the current user is already signed in, there is no need to sign up, so redirect them
     if flask_login.current_user.is_authenticated:
         flash('You are already logged in, silly!') # flash can be used to pass a special message to the template we are about to render
@@ -163,8 +162,10 @@ def register():
 @app.route('/stories')
 def stories():
     u = None
+    # print(flask_login.current_user, file=sys.stderr)
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
+    print(u, file=sys.stderr)
     return render_template("stories.html", username = u)
 
 @app.route('/book')
@@ -172,7 +173,7 @@ def book():
     u = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
-    
+
     page = request.args.get('page', default = 0, type=int)
     response = openai.Image.create(
     prompt = session["story"][page],
@@ -184,11 +185,10 @@ def book():
     return render_template("book.html", username = u, url = image_url, content = session["story"][page], page = page, last_page = len(session["story"]))
 
 @app.route('/create-book', methods = ['GET', 'POST'])
+@flask_login.login_required
 def create_book():
-    u = None
-    if hasattr(flask_login.current_user, "data"):
-        u = flask_login.current_user.data['firstName']
-    
+    u = flask_login.current_user.data['firstName']
+
     if request.method == 'POST':
         db.users.updateOne({"username": flask_login.current_user.data['_id']}, {'$push' : {'stories' : { 'story' : session["story"], 'title' : session["title"]}}})
         return(redirect(url_for("stories")))
@@ -210,6 +210,33 @@ def create_book():
         session["story"] = response["choices"][0]["text"].split("\n\n")[2:]
 
     return render_template("create_book.html", username = u, story=session["story"], title=session["title"])
+
+@app.route('/private', methods = ['GET', 'POST'])
+@flask_login.login_required
+def private():
+    u = flask_login.current_user.data['firstName']
+
+    # if request.method == 'POST':
+    #     db.users.updateOne({"username": flask_login.current_user.data['_id']}, {'$push' : {'stories' : { 'story' : session["story"], 'title' : session["title"]}}})
+    #     return(redirect(url_for("stories")))
+    #
+    # prompt = request.args.get('prompt')
+    # session["story"] = ["Enter Prompt To Generate Story!"]
+    # session["title"] = None
+    # if(prompt != None):
+    #     response = openai.Completion.create(
+    #     model="text-davinci-003",
+    #     prompt=f"Give a title with a story about {prompt}",
+    #     temperature=0.8,
+    #     max_tokens=2048,
+    #     top_p=1.0,
+    #     frequency_penalty=0.5,
+    #     presence_penalty=0.0
+    #     )
+    #     session["title"] = response["choices"][0]["text"].split("\n\n")[1]
+    #     session["story"] = response["choices"][0]["text"].split("\n\n")[2:]
+
+    return render_template("private.html", username = u)
 
 @app.route('/logout')
 @flask_login.login_required
