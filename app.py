@@ -171,15 +171,16 @@ def stories():
 
     return render_template("stories.html", username = u, books = shared_books)
 
-@app.route('/book', methods = ['POST'])
+@app.route('/book', methods = ['POST', 'GET'])
 def book():
     u = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
 
-    book_id = request.form['id']
-    book = db.books.find_one({"_id" : ObjectId(book_id)})
-    session["story"] = book["story"]
+    if request.method == 'POST':
+        book_id = request.form['id']
+        book = db.books.find_one({"_id" : ObjectId(book_id)})
+        session["story"] = book["story"]
 
     page = request.args.get('page', default = 0, type=int)
     response = openai.Image.create(
@@ -243,12 +244,44 @@ def private():
     #     )
     #     session["title"] = response["choices"][0]["text"].split("\n\n")[1]
     #     session["story"] = response["choices"][0]["text"].split("\n\n")[2:]
+    books = get_private_books()
+    return render_template("private.html", username = u, books = books)
+
+@app.route('/delete', methods = ['GET', 'POST'])
+@flask_login.login_required
+def delete():
+    u = flask_login.current_user.data['firstName']
+    book_id = request.form['id']
+    db.users.update_one( { "_id": flask_login.current_user.data["_id"] }, { "$pull": { "stories": ObjectId(book_id)} } )
+    db.books.delete_one({"_id": ObjectId(book_id)})
+    books = get_private_books()
+    return render_template("private.html", username = u, books = books)
+
+@app.route('/share', methods = ['GET', 'POST'])
+@flask_login.login_required
+def share():
+    u = flask_login.current_user.data['firstName']
+    book_id = request.form['id']
+    db.books.update_one( { "_id": ObjectId(book_id) }, { "$set": { "shared": True} } )
+    books = get_private_books()
+    return render_template("private.html", username = u, books = books)
+
+@app.route('/unshare', methods = ['GET', 'POST'])
+@flask_login.login_required
+def unshare():
+    u = flask_login.current_user.data['firstName']
+    book_id = request.form['id']
+    db.books.update_one( { "_id": ObjectId(book_id) }, { "$set": { "shared": False} } )
+    books = get_private_books()
+    return render_template("private.html", username = u, books = books)
+
+def get_private_books():
     private_books = db.users.find_one({"_id": flask_login.current_user.data['_id']}, {"_id" : 0, "stories" : 1})['stories']
     books = []
     for book_id in private_books:
         book = db.books.find_one({"_id" : book_id})
         books.append(book)
-    return render_template("private.html", username = u, books = books)
+    return books
 
 @app.route('/logout')
 @flask_login.login_required
