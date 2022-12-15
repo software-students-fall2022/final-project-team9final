@@ -106,7 +106,6 @@ def login():
     Processes login and redirects accordingly if request was made
     Otherwise display login form
     """
-
     # if the current user is already signed in, there is no need to sign up, so redirect them
     if flask_login.current_user.is_authenticated:
         flash('You are already logged in, silly!') # flash can be used to pass a special message to the template we are about to render
@@ -163,8 +162,10 @@ def register():
 @app.route('/stories')
 def stories():
     u = None
+    # print(flask_login.current_user, file=sys.stderr)
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
+    print(u, file=sys.stderr)
     return render_template("stories.html", username = u)
 
 @app.route('/book')
@@ -172,7 +173,7 @@ def book():
     u = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
-    
+
     page = request.args.get('page', default = 0, type=int)
     response = openai.Image.create(
     prompt = session["story"][page],
@@ -188,7 +189,7 @@ def create_book():
     u = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
-    
+
     if request.method == 'POST':
         db.users.updateOne({"username": flask_login.current_user.data['_id']}, {'$push' : {'stories' : { 'story' : session["story"], 'title' : session["title"]}}})
         return(redirect(url_for("stories")))
