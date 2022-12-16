@@ -320,14 +320,17 @@ def countLike():
 @cross_origin()
 def updateLike():
     input = request.get_json()
+    print(input, file=sys.stderr)
     username = input['username']
     storyID = ObjectId(input['storyID'])
     temp = db.books.find_one({"_id": storyID})
     b = loads(dumps(temp))
     if username in b['likes']:
-        db.books.update_one({"_id": storyID}, {'$push': {'likes': username}})
-    else:
         db.books.update_one({"_id": storyID}, {'$pull': {'likes': username}})
+    else:
+        db.books.update_one({"_id": storyID}, {'$push': {'likes': username}})
+    temp = db.books.find_one({"_id": storyID})
+    b = loads(dumps(temp))
     num = len(b['likes'])
     has = username in b['likes']
     data = {
