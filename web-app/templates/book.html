@@ -11,6 +11,61 @@
     <div class = "right-page">
         <br>
         <h1>{{content}}</h1>
+        {% if username %}
+        <button name="like" id='likeButton' class="like">like</button>
+        <div id='likeCount'></div>
+        <script type="text/javascript">
+            var prohost = window.location.protocol + "//" + window.location.host + '/';
+            addEventListener("DOMContentLoaded", function(evt) {
+                var url = prohost + 'api/countLike';
+                var req = new XMLHttpRequest();
+                req.open('POST', url, true);
+                req.setRequestHeader("Content-type", "application/json");
+                req.addEventListener('load', function() {
+                    if (req.status >= 200 && req.status < 400) {
+                        var res = JSON.parse(req.responseText);
+                        if (res.contains){
+                            document.getElementById('likeButton').innerHTML = 'Unlike (' + res.count + ')';
+                        }
+                        else{
+                            document.getElementById('likeButton').innerHTML = 'Like (' + res.count + ')';
+                        }
+                        document.getElementById('likeCount').innerHTML = res.count;
+                    }
+                });
+                params = {
+                    username: {{username|tojson}},
+                    storyID: {{storyID|tojson}}
+                }
+                console.log(JSON.stringify(params));
+                req.send(JSON.stringify(params));
+            });
+
+            document.getElementById('likeButton').addEventListener("click", function(evt) {
+                var url = prohost + 'api/updateLike';
+                var req = new XMLHttpRequest();
+                req.open('POST', url, true);
+                req.setRequestHeader("Content-type", "application/json");
+                req.addEventListener('load', function() {
+                    if (req.status >= 200 && req.status < 400) {
+                        var res = JSON.parse(req.responseText);
+                        if (res.contains){
+                            document.getElementById('likeButton').innerHTML = 'Unlike (' + res.count + ')';
+                        }
+                        else{
+                            document.getElementById('likeButton').innerHTML = 'Like (' + res.count + ')';
+                        }
+                    }
+                });
+                params = {
+                    username: {{username|tojson}},
+                    storyID: {{storyID|tojson}}
+                }
+                console.log(params);
+                req.send(JSON.stringify(params));
+            });
+        </script>
+        {% endif %}
     </div>
     <div class = "flip-page">
         <img src= {{url}}>
@@ -24,4 +79,4 @@
 </form>
 {% endif %}
 
-  {% endblock %}
+{% endblock %}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, abort, url_for, make_response, flash, session
+from flask import Flask, jsonify, render_template, request, redirect, abort, url_for, make_response, flash, session
 import os
 from os import urandom
 from bson.json_util import dumps, loads
@@ -16,8 +16,11 @@ from werkzeug.utils import secure_filename
 import random
 import json
 import openai
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.secret_key = urandom(32)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 config = dotenv_values(".env")
@@ -174,14 +177,17 @@ def stories():
 @app.route('/book', methods = ['POST', 'GET'])
 def book():
     u = None
+    user = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
+        user = flask_login.current_user.data['username']
 
     if request.method == 'POST':
         book_id = request.form['id']
         book = db.books.find_one({"_id" : ObjectId(book_id)})
         session["story"] = book["story"]
 
+    ID = request.form['id']
     page = request.args.get('page', default = 0, type=int)
     response = openai.Image.create(
     prompt = session["story"][page],
@@ -190,7 +196,7 @@ def book():
     )
     image_url = response['data'][0]['url']
 
-    return render_template("book.html", username = u, url = image_url, content = session["story"][page], page = page, last_page = len(session["story"]))
+    return render_template("book.html", username = u, user = user, storyID = ID, url = image_url, content = session["story"][page], page = page, last_page = len(session["story"]))
 
 @app.route('/create-book', methods = ['GET', 'POST'])
 @flask_login.login_required
@@ -198,7 +204,7 @@ def create_book():
     u = flask_login.current_user.data['firstName']
 
     if request.method == 'POST':
-        _id = db.books.insert_one({"title": session["title"], 'story': session["story"], 'shared' : False})
+        _id = db.books.insert_one({"title": session["title"], 'story': session["story"], 'shared' : False, 'liked' : []})
         db.users.update_one({"_id": flask_login.current_user.data['_id']}, {'$push' : {'stories' : ObjectId(_id.inserted_id)}})
         return(redirect(url_for("private")))
 
@@ -292,6 +298,43 @@ def logout():
     flask_login.logout_user()
     return(redirect(url_for("stories")))
 
+@app.route('/api/countLike', methods = ['POST'])
+@flask_login.login_required
+@cross_origin()
+def countLike():
+    input = request.get_json()
+    username = input['username']
+    storyID = ObjectId(input['storyID'])
+    temp = db.books.find_one({"_id": storyID})
+    b = loads(dumps(temp))
+    num = len(b['likes'])
+    has = username in b['likes']
+    data = {
+        "count" : num,
+        "contains" : has,
+    }
+    return jsonify(data), 200, {'Content-Type': 'application/json'}
+
+@app.route('/api/updateLike', methods = ['POST'])
+@flask_login.login_required
+@cross_origin()
+def updateLike():
+    input = request.get_json()
+    username = input['username']
+    storyID = ObjectId(input['storyID'])
+    temp = db.books.find_one({"_id": storyID})
+    b = loads(dumps(temp))
+    if username in b['likes']:
+        db.books.update_one({"_id": storyID}, {'$push': {'likes': username}})
+    else:
+        db.books.update_one({"_id": storyID}, {'$pull': {'likes': username}})
+    num = len(b['likes'])
+    has = username in b['likes']
+    data = {
+        "count" : num,
+        "contains" : has,
+    }
+    return jsonify(data), 200, {'Content-Type': 'application/json'}
 
 if __name__=='__main__':
     #app.run(debug=True)
