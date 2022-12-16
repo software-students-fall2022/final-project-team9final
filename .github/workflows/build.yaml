@@ -21,7 +21,7 @@ jobs:
           if [ -f ./web-app/requirements.txt ]; then pip install -r ./web-app/requirements.txt; fi
       - name: 'Create env file'
         run: |
-          echo ${{ secrets.ENV_FILE }} > .env
+          echo '${{ secrets.ENV_FILE }}' > web-app/.env
       - name: Test with pytest
         run: |
           python -m pytest web-app/tests
