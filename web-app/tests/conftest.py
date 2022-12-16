@@ -1,3 +1,5 @@
+from pymongo import MongoClient
+import mongomock
 import pytest
 from app import app
 from werkzeug.security import generate_password_hash
@@ -8,14 +10,14 @@ def flask_app():
     with app.test_client() as client:
         yield client
 
-
 @pytest.fixture(scope='session')
 def app_with_database(flask_app):
-    Database.initialize_mock()
-    yield flask_app
+    database = mongomock.MongoClient().db
+    yield database
 
 @pytest.fixture(scope='session')
 def app_with_data(app_with_database):
     hashed_password = generate_password_hash("test")
-    Database.insert_one('user', {"username": "test", 'firstName': "test", 'lastName': "test",  "password": hashed_password})
+    app_with_database.database.insert_one('user', {"username": "test", 'firstName': "test", 'lastName': "test",  "password": hashed_password})
     yield app_with_database
+
