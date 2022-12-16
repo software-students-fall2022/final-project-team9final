@@ -1,11 +1,11 @@
 services:
   db:
     image: mongo:latest
-    ports: 
+    ports:
       - "27017:27017"
-    
+
   webapp:
-    build: .
+    build: ./web-app
     ports:
       - "5000:5000"
     depends_on:
