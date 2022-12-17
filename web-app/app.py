@@ -178,6 +178,7 @@ def book():
 
     ID = request.form['id']
     page = request.args.get('page', default = 0, type=int)
+    
     response = openai.Image.create(
     prompt = session["story"][page],
     n=1,
@@ -194,7 +195,7 @@ def create_book():
 
     if request.method == 'POST':
         _id = Database.insert_one('books',{"title": session["title"], 'story': session["story"], 'shared' : False, 'liked' : []})
-        Database.update_one('users',{"_id": flask_login.current_user.data['_id']}, {'$push' : {'stories' : ObjectId(_id.inserted_id)}})
+        Database.update('users',{"_id": flask_login.current_user.data['_id']}, {'$push' : {'stories' : ObjectId(_id.inserted_id)}})
         return(redirect(url_for("private")))
 
     prompt = request.args.get('prompt')
@@ -247,8 +248,8 @@ def private():
 def delete():
     u = flask_login.current_user.data['firstName']
     book_id = request.form['id']
-    Database.update_one('users', { "_id": flask_login.current_user.data["_id"] }, { "$pull": { "stories": ObjectId(book_id)} } )
-    Database.delete_one({"_id": ObjectId(book_id)})
+    Database.update('users', { "_id": flask_login.current_user.data["_id"] }, { "$pull": { "stories": ObjectId(book_id)} } )
+    Database.delete({"_id": ObjectId(book_id)})
     books = get_private_books()
     return render_template("private.html", username = u, books = books)
 
@@ -257,7 +258,7 @@ def delete():
 def share():
     u = flask_login.current_user.data['firstName']
     book_id = request.form['id']
-    Database.update_one('books', { "_id": ObjectId(book_id) }, { "$set": { "shared": True} } )
+    Database.update('books', { "_id": ObjectId(book_id) }, { "$set": { "shared": True} } )
     books = get_private_books()
     return render_template("private.html", username = u, books = books)
 
@@ -266,7 +267,7 @@ def share():
 def unshare():
     u = flask_login.current_user.data['firstName']
     book_id = request.form['id']
-    Database.update_one('books', { "_id": ObjectId(book_id) }, { "$set": { "shared": False} } )
+    Database.update('books', { "_id": ObjectId(book_id) }, { "$set": { "shared": False} } )
     books = get_private_books()
     return render_template("private.html", username = u, books = books)
 
