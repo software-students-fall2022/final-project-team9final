@@ -30,7 +30,7 @@ cxn = pymongo.MongoClient(os.getenv('MONGO_URI'), serverSelectionTimeoutMS=5000,
 try:
     # verify the connection works by pinging the database
     cxn.admin.command('ping') # The ping command is cheap and does not require auth.
-    db = cxn[load_dotenv('MONGO_DBNAME')] # store a reference to the database
+    db = cxn[os.getenv('MONGO_DBNAME')] # store a reference to the database
     print(' *', 'Connected to MongoDB!') # if we get here, the connection worked!
 except Exception as e:
     # the ping command failed, so the connection is not available.
