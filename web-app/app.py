@@ -271,7 +271,7 @@ def unshare():
     return render_template("private.html", username = u, books = books)
 
 def get_private_books():
-    private_books = Database.find_one('users',{"_id": flask_login.current_user.data['_id']}, {"_id" : 0, "stories" : 1})
+    private_books = Database.find_one('users',{"_id": flask_login.current_user.data['_id']}, {"_id" : 0, "stories" : 1})['stories']
     books = []
     for book_id in private_books:
         book = Database.find_one('books',{"_id" : book_id})
