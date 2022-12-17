@@ -200,7 +200,7 @@ def create_book():
     u = flask_login.current_user.data['firstName']
 
     if request.method == 'POST':
-        _id = Database.insert_one('books',{"title": session["title"], 'story': session["story"], 'shared' : False, 'liked' : [], "creator" : flask_login.current_user.data["_id"]})
+        _id = Database.insert_one('books',{"title": session["title"], 'story': session["story"], 'shared' : False, 'liked' : [], "creator" : flask_login.current_user.data["username"]})
         Database.update('users',{"_id": flask_login.current_user.data['_id']}, {'$push' : {'stories' : ObjectId(_id.inserted_id)}})
         return(redirect(url_for("private")))
 
