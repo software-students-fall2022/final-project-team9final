@@ -25,7 +25,7 @@ app.secret_key = urandom(32)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 config = dotenv_values(".env")
 
-Database.initialize(config['MONGO_URI'])
+Database.initialize(config['MONGO_URI'], config['MONGO_DBNAME'])
 
 # set up flask-login for user authentication
 login_manager = flask_login.LoginManager()
@@ -271,7 +271,7 @@ def unshare():
     return render_template("private.html", username = u, books = books)
 
 def get_private_books():
-    private_books = Database.find_one('users',{"_id": flask_login.current_user.data['_id']}, {"_id" : 0, "stories" : 1})['stories']
+    private_books = Database.find_one('users',{"_id": flask_login.current_user.data['_id']}, {"_id" : 0, "stories" : 1})
     books = []
     for book_id in private_books:
         book = Database.find_one('books',{"_id" : book_id})

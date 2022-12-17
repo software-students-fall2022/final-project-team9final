@@ -11,12 +11,12 @@ class Database(object):
     ca = certifi.where()
 
     @staticmethod
-    def initialize(url):
+    def initialize(url, db_name):
         connection= MongoClient(url, tlsCAFile=Database.ca)
         try:
             connection.admin.command('ping')
             Database.client=connection
-            Database.database = connection["project_4"]
+            Database.database = connection[db_name]
             print(' *', 'Connected to MongoDB!', file=sys.stderr)
         except Exception as e:
             print(' *', "Failed to connect to MongoDB at", file=sys.stderr)
