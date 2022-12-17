@@ -1,4 +1,4 @@
-name: web-app deliver image & deploy
+name: CD
 on: [push]
 jobs:
   docker:
@@ -24,7 +24,7 @@ jobs:
             push: ${{ github.event_name != 'pull_request' }}
             tags: ${{ steps.meta.outputs.tags }}
             labels: ${{ steps.meta.outputs.labels }}
-  docker:
+  deploy:
     runs-on: ubuntu-latest
     needs: docker
     steps:
