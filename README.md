@@ -1,5 +1,4 @@
 ![web-app](https://github.com/software-students-fall2022/final-project-team9final/actions/workflows/build.yaml/badge.svg)
-![web-app](https://github.com/software-students-fall2022/final-project-team9final/actions/workflows/ci.yaml/badge.svg)
 
 ## Introduction
 
