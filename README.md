@@ -31,7 +31,7 @@ flask run
 ```
 
 ## Run Tests
-- At the `web-app` directory of the project run the commands
+1. At the `web-app` directory of the project run the commands
 
 ```(python)
 python -m pytest
