@@ -1,4 +1,5 @@
 ![web-app](https://github.com/software-students-fall2022/final-project-team9final/actions/workflows/build.yaml/badge.svg)
+![web-app](https://github.com/software-students-fall2022/final-project-team9final/actions/workflows/ci.yaml/badge.svg)
 
 ## Introduction
 
@@ -6,7 +7,7 @@ This web application allows users to create stories based on a random prompt giv
 
 ## SetUp
 
-1. An `.env` folder is required in the `web-app` directory. 
+1. An `.env` folder is required in the `web-app` directory.
     - There is a total of 3 variables that needs to be included
         - `MONGO_DBNAME`
         - `MONGO_URI`
