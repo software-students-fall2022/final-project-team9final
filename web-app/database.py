@@ -3,10 +3,9 @@ import mongomock
 from bson.json_util import dumps, loads
 import certifi
 import sys
-from datetime import datetime, date
 
 class Database(object):
-    
+
     database=None
     client=None
     ca = certifi.where()
@@ -36,13 +35,11 @@ class Database(object):
         return (Database.database[collection].find(query,field))
 
     @staticmethod
-    def find_single(collection, query, field=""):
-        #print(Database.database, file=sys.stderr);
+    def find_one(collection, query, field=""):
         return (Database.database[collection].find_one(query,field))
 
     @staticmethod
     def find_first_sorted(collection, query, field=""):
-        #print(Database.database, file=sys.stderr);
         return (Database.database[collection].find(query,field).sort('time', -1).limit(1))
 
     @staticmethod

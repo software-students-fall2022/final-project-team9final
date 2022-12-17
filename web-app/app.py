@@ -25,18 +25,7 @@ app.secret_key = urandom(32)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 config = dotenv_values(".env")
 
-# connect to the database
-cxn = pymongo.MongoClient(config['MONGO_URI'], serverSelectionTimeoutMS=5000, tlsCAFile=certifi.where())
-try:
-    # verify the connection works by pinging the database
-    cxn.admin.command('ping') # The ping command is cheap and does not require auth.
-    db = cxn[config['MONGO_DBNAME']] # store a reference to the database
-    print(' *', 'Connected to MongoDB!') # if we get here, the connection worked!
-except Exception as e:
-    # the ping command failed, so the connection is not available.
-    # render_template('error.html', error=e) # render the edit template
-    print(' *', "Failed to connect to MongoDB at", config['MONGO_URI'])
-    print('Database connection error:', e) # debug
+Database.initialize(config['MONGO_URI'])
 
 # set up flask-login for user authentication
 login_manager = flask_login.LoginManager()
@@ -66,7 +55,7 @@ def locate_user(user_id=None, username=None):
     else:
         # loop up by username
         criteria = {"username": username}
-    doc = db.users.find_one(criteria) # find a user with the given criteria
+    doc = Database.find_one('users',criteria) # find a user with the given criteria
 
     # if user exists in the database, create a User object and return it
     if doc:
@@ -153,7 +142,7 @@ def register():
             flash('An account was already created with this username.')
         else:
             hashed_password = generate_password_hash(p)
-            db.users.insert_one({"username": u, 'firstName': firstName, 'lastName': lastName,  "password": hashed_password})
+            Database.insert_one('users',{"username": u, 'firstName': firstName, 'lastName': lastName,  "password": hashed_password})
             flash('Success!')
             return redirect(url_for('login'))
     else:
@@ -166,7 +155,7 @@ def register():
 def stories():
     u = None
     # print(flask_login.current_user, file=sys.stderr)
-    shared_books = db.books.find({"shared": True})
+    shared_books = Database.find('books',{"shared": True})
 
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
@@ -184,7 +173,7 @@ def book():
 
     if request.method == 'POST':
         book_id = request.form['id']
-        book = db.books.find_one({"_id" : ObjectId(book_id)})
+        book = Database.find_one('books',{"_id" : ObjectId(book_id)})
         session["story"] = book["story"]
 
     ID = request.form['id']
@@ -204,8 +193,8 @@ def create_book():
     u = flask_login.current_user.data['firstName']
 
     if request.method == 'POST':
-        _id = db.books.insert_one({"title": session["title"], 'story': session["story"], 'shared' : False, 'liked' : []})
-        db.users.update_one({"_id": flask_login.current_user.data['_id']}, {'$push' : {'stories' : ObjectId(_id.inserted_id)}})
+        _id = Database.insert_one('books',{"title": session["title"], 'story': session["story"], 'shared' : False, 'liked' : []})
+        Database.update_one('users',{"_id": flask_login.current_user.data['_id']}, {'$push' : {'stories' : ObjectId(_id.inserted_id)}})
         return(redirect(url_for("private")))
 
     prompt = request.args.get('prompt')
@@ -258,8 +247,8 @@ def private():
 def delete():
     u = flask_login.current_user.data['firstName']
     book_id = request.form['id']
-    db.users.update_one( { "_id": flask_login.current_user.data["_id"] }, { "$pull": { "stories": ObjectId(book_id)} } )
-    db.books.delete_one({"_id": ObjectId(book_id)})
+    Database.update_one('users', { "_id": flask_login.current_user.data["_id"] }, { "$pull": { "stories": ObjectId(book_id)} } )
+    Database.delete_one({"_id": ObjectId(book_id)})
     books = get_private_books()
     return render_template("private.html", username = u, books = books)
 
@@ -268,7 +257,7 @@ def delete():
 def share():
     u = flask_login.current_user.data['firstName']
     book_id = request.form['id']
-    db.books.update_one( { "_id": ObjectId(book_id) }, { "$set": { "shared": True} } )
+    Database.update_one('books', { "_id": ObjectId(book_id) }, { "$set": { "shared": True} } )
     books = get_private_books()
     return render_template("private.html", username = u, books = books)
 
@@ -277,15 +266,15 @@ def share():
 def unshare():
     u = flask_login.current_user.data['firstName']
     book_id = request.form['id']
-    db.books.update_one( { "_id": ObjectId(book_id) }, { "$set": { "shared": False} } )
+    Database.update_one('books', { "_id": ObjectId(book_id) }, { "$set": { "shared": False} } )
     books = get_private_books()
     return render_template("private.html", username = u, books = books)
 
 def get_private_books():
-    private_books = db.users.find_one({"_id": flask_login.current_user.data['_id']}, {"_id" : 0, "stories" : 1})['stories']
+    private_books = Database.find_one('users',{"_id": flask_login.current_user.data['_id']}, {"_id" : 0, "stories" : 1})['stories']
     books = []
     for book_id in private_books:
-        book = db.books.find_one({"_id" : book_id})
+        book = Database.find_one('books',{"_id" : book_id})
         books.append(book)
     return books
 
@@ -305,7 +294,7 @@ def countLike():
     input = request.get_json()
     username = input['username']
     storyID = ObjectId(input['storyID'])
-    temp = db.books.find_one({"_id": storyID})
+    temp = Database.find_one('books',{"_id": storyID})
     b = loads(dumps(temp))
     num = len(b['likes'])
     has = username in b['likes']
@@ -323,13 +312,13 @@ def updateLike():
     print(input, file=sys.stderr)
     username = input['username']
     storyID = ObjectId(input['storyID'])
-    temp = db.books.find_one({"_id": storyID})
+    temp = Database.find_one('books',{"_id": storyID})
     b = loads(dumps(temp))
     if username in b['likes']:
-        db.books.update_one({"_id": storyID}, {'$pull': {'likes': username}})
+        Database.update('books',{"_id": storyID}, {'$pull': {'likes': username}})
     else:
-        db.books.update_one({"_id": storyID}, {'$push': {'likes': username}})
-    temp = db.books.find_one({"_id": storyID})
+        Database.update('books',{"_id": storyID}, {'$push': {'likes': username}})
+    temp = Database.find_one('books',{"_id": storyID})
     b = loads(dumps(temp))
     num = len(b['likes'])
     has = username in b['likes']
