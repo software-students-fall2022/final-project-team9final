@@ -144,7 +144,7 @@ def register():
             flash('An account was already created with this username.')
         else:
             hashed_password = generate_password_hash(p)
-            Database.insert_one('users',{"username": u, 'firstName': firstName, 'lastName': lastName,  "password": hashed_password, "followers":[] , "following" : []})
+            Database.insert_one('users',{"username": u, 'firstName': firstName, 'lastName': lastName,  "password": hashed_password, "stories":[],"followers":[] , "following" : []})
             flash('Success!')
             return redirect(url_for('login'))
     else:
@@ -349,9 +349,7 @@ def profile():
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
     username = request.form['id']
-    print(username)
     user = Database.find_one('users',{"username" : username})
-    print(user)
     followers = list(user["followers"])
     following = list(user["following"])
     books_result = Database.find('books',{"creator" : username, "shared": True})
@@ -359,8 +357,45 @@ def profile():
         books=[]
     else:
         books=list(books_result)
-    
-    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_name = user["firstName"])
+    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["username"])
+
+@app.route('/follow', methods = ['GET', 'POST'])
+def follow():
+    u = None
+    if hasattr(flask_login.current_user, "data"):
+        u = flask_login.current_user.data['firstName']
+    username = request.form['id']
+    Database.update('users',{"username" : username},{'$push' : {'followers' : flask_login.current_user.data['username']}} )
+    Database.update('users',{"username" : flask_login.current_user.data['username']},{'$push' : {'following' : username}} )
+
+    user = Database.find_one('users',{"username" : username})
+    followers = list(user["followers"])
+    following = list(user["following"])
+    books_result = Database.find('books',{"creator" : username, "shared": True})
+    if books_result is None:
+        books=[]
+    else:
+        books=list(books_result)
+    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["firstName"])
+
+@app.route('/unfollow', methods = ['GET', 'POST'])
+def unfollow():
+    u = None
+    if hasattr(flask_login.current_user, "data"):
+        u = flask_login.current_user.data['firstName']
+    username = request.form['id']
+    Database.update('users',{"username" : username},{'$pull' : {'followers' : flask_login.current_user.data['username']}} )
+    Database.update('users',{"username" : flask_login.current_user.data['username']},{'$pull' : {'following' : username}} )
+
+    user = Database.find_one('users',{"username" : username})
+    followers = list(user["followers"])
+    following = list(user["following"])
+    books_result = Database.find('books',{"creator" : username, "shared": True})
+    if books_result is None:
+        books=[]
+    else:
+        books=list(books_result)
+    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["firstName"])
 
 if __name__=='__main__':
     #app.run(debug=True)

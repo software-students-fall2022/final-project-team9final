@@ -2,7 +2,7 @@
 {% block container %}
 <div class = "profile-header">
     <div class = "profile-header-block-value">
-        {{profile_name}}
+        {{profile_username}}
     </div>
     <div class = "profile-header-block-value">
         {{books|length}}
@@ -22,6 +22,21 @@
             Following
         </div>
     </div>
+    {% if username and username != profile_username %}
+    {% if username in followers %}
+    <div class = "profile-header-block-value">
+            <form action="/unfollow" method="post">
+                <button class="follow-button" name= "id" id= "id" value = "{{profile_username}}">unfollow</button>
+            </form>
+    </div>
+    {% else %}
+    <div class = "profile-header-block-value">
+        <form action="/follow" method="post">
+            <button class="follow-button" name= "id" id= "id" value = "{{profile_username}}">follow</button>
+        </form>
+    </div>
+    {% endif %}
+    {% endif %}
 </div>
 {%for book in books%}
 <div class = "private_button">
