@@ -144,7 +144,7 @@ def register():
             flash('An account was already created with this username.')
         else:
             hashed_password = generate_password_hash(p)
-            Database.insert_one('users',{"username": u, 'firstName': firstName, 'lastName': lastName,  "password": hashed_password, "followers":0 , "following" : 0})
+            Database.insert_one('users',{"username": u, 'firstName': firstName, 'lastName': lastName,  "password": hashed_password, "followers":[] , "following" : []})
             flash('Success!')
             return redirect(url_for('login'))
     else:
@@ -244,8 +244,8 @@ def private():
     #     session["story"] = response["choices"][0]["text"].split("\n\n")[2:]
     books = get_private_books()
     user = Database.find_one('users',{"_id" : flask_login.current_user.data["_id"]})
-    followers = user["followers"]
-    following = user["following"]
+    followers = list(user["followers"])
+    following = list(user["following"])
     return render_template("private.html", username = u, books = books, followers = followers, following = following)
 
 @app.route('/delete', methods = ['GET', 'POST'])
@@ -257,8 +257,8 @@ def delete():
     Database.delete('books',{"_id": ObjectId(book_id)})
     books = get_private_books()
     user = Database.find_one('users',{"_id" : flask_login.current_user.data["_id"]})
-    followers = user["followers"]
-    following = user["following"]
+    followers = list(user["followers"])
+    following = list(user["following"])
     return render_template("private.html", username = u, books = books, followers=followers, following = following)
 
 @app.route('/share', methods = ['GET', 'POST'])
@@ -269,8 +269,8 @@ def share():
     Database.update('books', { "_id": ObjectId(book_id) }, { "$set": { "shared": True} } )
     books = get_private_books()
     user = Database.find_one('users',{"_id" : flask_login.current_user.data["_id"]})
-    followers = user["followers"]
-    following = user["following"]
+    followers = list(user["followers"])
+    following = list(user["following"])
     return render_template("private.html", username = u, books = books, followers = followers, following = following)
 
 @app.route('/unshare', methods = ['GET', 'POST'])
@@ -281,8 +281,8 @@ def unshare():
     Database.update('books', { "_id": ObjectId(book_id) }, { "$set": { "shared": False} } )
     books = get_private_books()
     user = Database.find_one('users',{"_id" : flask_login.current_user.data["_id"]})
-    followers = user["followers"]
-    following = user["following"]
+    followers = list(user["followers"])
+    following = list(user["following"])
     return render_template("private.html", username = u, books = books, followers = followers, following = following)
 
 def get_private_books():
@@ -348,8 +348,8 @@ def updateLike():
 def profile():
     u = flask_login.current_user.data['firstName']
     user = Database.find_one('users',{"_id" : flask_login.current_user.data["_id"]})
-    followers = user["followers"]
-    following = user["following"]
+    followers = list(user["followers"])
+    following = list(user["following"])
     books_result = Database.find('books',{"creator" : flask_login.current_user.data["_id"], "shared": True})
     if books_result is None:
         books=[]
