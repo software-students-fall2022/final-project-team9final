@@ -144,7 +144,7 @@ def register():
             flash('An account was already created with this username.')
         else:
             hashed_password = generate_password_hash(p)
-            Database.insert_one('users',{"username": u, 'firstName': firstName, 'lastName': lastName,  "password": hashed_password})
+            Database.insert_one('users',{"username": u, 'firstName': firstName, 'lastName': lastName,  "password": hashed_password, "stories":[],"followers":[] , "following" : []})
             flash('Success!')
             return redirect(url_for('login'))
     else:
@@ -176,19 +176,23 @@ def book():
     if request.method == 'POST':
         book_id = request.form['id']
         book = Database.find_one('books',{"_id" : ObjectId(book_id)})
-        session["story"] = book["story"]
         session["book_id"] = book_id
+        image_urls = []
+        for sentence in book["story"]:
+            response = openai.Image.create(
+            prompt = sentence,
+            n=1,
+            size="256x256"
+            )
+            image_urls.append(response['data'][0]['url'])
+        session["image_urls"] = image_urls
 
+    book = Database.find_one("books", {"_id": ObjectId(session["book_id"])})
+    creator = book["creator"]
+    likes = book["liked"]
+    story = book["story"]
     page = request.args.get('page', default = 0, type=int)
-
-    response = openai.Image.create(
-    prompt = session["story"][page],
-    n=1,
-    size="256x256"
-    )
-    image_url = response['data'][0]['url']
-
-    return render_template("book.html", username = u, user = user, storyID = session["book_id"], url = image_url, content = session["story"][page], page = page, last_page = len(session["story"]))
+    return render_template("book.html", username = u, user = user, storyID = session["book_id"], url = session["image_urls"][page], content = story[page], page = page, last_page = len(story), creator = creator, likes=likes)
 
 @app.route('/create-book', methods = ['GET', 'POST'])
 @flask_login.login_required
@@ -196,7 +200,7 @@ def create_book():
     u = flask_login.current_user.data['firstName']
 
     if request.method == 'POST':
-        _id = Database.insert_one('books',{"title": session["title"], 'story': session["story"], 'shared' : False, 'liked' : []})
+        _id = Database.insert_one('books',{"title": session["title"], 'story': session["story"], 'shared' : False, 'liked' : [], "creator" : flask_login.current_user.data["username"]})
         Database.update('users',{"_id": flask_login.current_user.data['_id']}, {'$push' : {'stories' : ObjectId(_id.inserted_id)}})
         return(redirect(url_for("private")))
 
@@ -243,7 +247,10 @@ def private():
     #     session["title"] = response["choices"][0]["text"].split("\n\n")[1]
     #     session["story"] = response["choices"][0]["text"].split("\n\n")[2:]
     books = get_private_books()
-    return render_template("private.html", username = u, books = books)
+    user = Database.find_one('users',{"_id" : flask_login.current_user.data["_id"]})
+    followers = list(user["followers"])
+    following = list(user["following"])
+    return render_template("private.html", username = u, books = books, followers = followers, following = following)
 
 @app.route('/delete', methods = ['GET', 'POST'])
 @flask_login.login_required
@@ -253,7 +260,10 @@ def delete():
     Database.update('users', { "_id": flask_login.current_user.data["_id"] }, { "$pull": { "stories": ObjectId(book_id)} } )
     Database.delete('books',{"_id": ObjectId(book_id)})
     books = get_private_books()
-    return render_template("private.html", username = u, books = books)
+    user = Database.find_one('users',{"_id" : flask_login.current_user.data["_id"]})
+    followers = list(user["followers"])
+    following = list(user["following"])
+    return render_template("private.html", username = u, books = books, followers=followers, following = following)
 
 @app.route('/share', methods = ['GET', 'POST'])
 @flask_login.login_required
@@ -262,7 +272,10 @@ def share():
     book_id = request.form['id']
     Database.update('books', { "_id": ObjectId(book_id) }, { "$set": { "shared": True} } )
     books = get_private_books()
-    return render_template("private.html", username = u, books = books)
+    user = Database.find_one('users',{"_id" : flask_login.current_user.data["_id"]})
+    followers = list(user["followers"])
+    following = list(user["following"])
+    return render_template("private.html", username = u, books = books, followers = followers, following = following)
 
 @app.route('/unshare', methods = ['GET', 'POST'])
 @flask_login.login_required
@@ -271,7 +284,10 @@ def unshare():
     book_id = request.form['id']
     Database.update('books', { "_id": ObjectId(book_id) }, { "$set": { "shared": False} } )
     books = get_private_books()
-    return render_template("private.html", username = u, books = books)
+    user = Database.find_one('users',{"_id" : flask_login.current_user.data["_id"]})
+    followers = list(user["followers"])
+    following = list(user["following"])
+    return render_template("private.html", username = u, books = books, followers = followers, following = following)
 
 def get_private_books():
     private_books = Database.find_one('users',{"_id": flask_login.current_user.data['_id']}, {"_id" : 0, "stories" : 1})['stories']
@@ -330,6 +346,60 @@ def updateLike():
         "contains" : has,
     }
     return jsonify(data), 200, {'Content-Type': 'application/json'}
+
+@app.route('/profile', methods = ['GET', 'POST'])
+def profile():
+    u = None
+    if hasattr(flask_login.current_user, "data"):
+        u = flask_login.current_user.data['firstName']
+    username = request.form['id']
+    user = Database.find_one('users',{"username" : username})
+    followers = list(user["followers"])
+    following = list(user["following"])
+    books_result = Database.find('books',{"creator" : username, "shared": True})
+    if books_result is None:
+        books=[]
+    else:
+        books=list(books_result)
+    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["username"])
+
+@app.route('/follow', methods = ['GET', 'POST'])
+def follow():
+    u = None
+    if hasattr(flask_login.current_user, "data"):
+        u = flask_login.current_user.data['firstName']
+    username = request.form['id']
+    Database.update('users',{"username" : username},{'$push' : {'followers' : flask_login.current_user.data['username']}} )
+    Database.update('users',{"username" : flask_login.current_user.data['username']},{'$push' : {'following' : username}} )
+
+    user = Database.find_one('users',{"username" : username})
+    followers = list(user["followers"])
+    following = list(user["following"])
+    books_result = Database.find('books',{"creator" : username, "shared": True})
+    if books_result is None:
+        books=[]
+    else:
+        books=list(books_result)
+    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["firstName"])
+
+@app.route('/unfollow', methods = ['GET', 'POST'])
+def unfollow():
+    u = None
+    if hasattr(flask_login.current_user, "data"):
+        u = flask_login.current_user.data['firstName']
+    username = request.form['id']
+    Database.update('users',{"username" : username},{'$pull' : {'followers' : flask_login.current_user.data['username']}} )
+    Database.update('users',{"username" : flask_login.current_user.data['username']},{'$pull' : {'following' : username}} )
+
+    user = Database.find_one('users',{"username" : username})
+    followers = list(user["followers"])
+    following = list(user["following"])
+    books_result = Database.find('books',{"creator" : username, "shared": True})
+    if books_result is None:
+        books=[]
+    else:
+        books=list(books_result)
+    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["firstName"])
 
 if __name__=='__main__':
     #app.run(debug=True)
