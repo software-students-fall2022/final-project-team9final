@@ -1,6 +1,6 @@
 name: cd
 on:
-    [push]
+    [push] 
 
 jobs:
     docker:
