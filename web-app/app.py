@@ -175,8 +175,8 @@ def book():
         book_id = request.form['id']
         book = Database.find_one('books',{"_id" : ObjectId(book_id)})
         session["story"] = book["story"]
+        session["book_id"] = book_id
 
-    ID = request.form['id']
     page = request.args.get('page', default = 0, type=int)
     
     response = openai.Image.create(
@@ -186,7 +186,7 @@ def book():
     )
     image_url = response['data'][0]['url']
 
-    return render_template("book.html", username = u, user = user, storyID = ID, url = image_url, content = session["story"][page], page = page, last_page = len(session["story"]))
+    return render_template("book.html", username = u, user = user, storyID = session["book_id"], url = image_url, content = session["story"][page], page = page, last_page = len(session["story"]))
 
 @app.route('/create-book', methods = ['GET', 'POST'])
 @flask_login.login_required
