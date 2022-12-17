@@ -1,10 +1,6 @@
 name: cd
 on:
-    push:
-        branches:
-            - 'deploy'
-        tags:
-            - 'v*'
+    [push]
 
 jobs:
     docker:
