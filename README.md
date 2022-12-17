@@ -37,9 +37,10 @@ flask run
 python -m pytest web-app/tests
 ```
 
-2. To test for `coverage` run the command
+2. To test for `coverage` run the commands
 ```
 coverage run -m pytest ./tests/*.py
+coverage report
 ```
 
 ## Authors
