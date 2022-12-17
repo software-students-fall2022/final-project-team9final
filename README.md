@@ -31,10 +31,10 @@ flask run
 ```
 
 ## Run Tests
-- At the root of the project run the commands
+- At the `web-app` directory of the project run the commands
 
 ```(python)
-python -m pytest web-app/tests
+python -m pytest
 ```
 
 2. To test for `coverage` run the command
