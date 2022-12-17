@@ -5,7 +5,7 @@ from bson.json_util import dumps, loads
 from bson.objectid import ObjectId
 import sys
 from datetime import datetime, date, timedelta
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 import certifi
 import re
 import pymongo
@@ -22,20 +22,20 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.secret_key = urandom(32)
+load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-config = dotenv_values(".env")
 
 # connect to the database
-cxn = pymongo.MongoClient(config['MONGO_URI'], serverSelectionTimeoutMS=5000, tlsCAFile=certifi.where())
+cxn = pymongo.MongoClient(os.getenv('MONGO_URI'), serverSelectionTimeoutMS=5000, tlsCAFile=certifi.where())
 try:
     # verify the connection works by pinging the database
     cxn.admin.command('ping') # The ping command is cheap and does not require auth.
-    db = cxn[config['MONGO_DBNAME']] # store a reference to the database
+    db = cxn[load_dotenv('MONGO_DBNAME')] # store a reference to the database
     print(' *', 'Connected to MongoDB!') # if we get here, the connection worked!
 except Exception as e:
     # the ping command failed, so the connection is not available.
     # render_template('error.html', error=e) # render the edit template
-    print(' *', "Failed to connect to MongoDB at", config['MONGO_URI'])
+    print(' *', "Failed to connect to MongoDB at", os.getenv('MONGO_URI'))
     print('Database connection error:', e) # debug
 
 # set up flask-login for user authentication
