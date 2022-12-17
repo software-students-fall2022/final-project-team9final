@@ -1,4 +1,4 @@
-name: ci
+name: web-app deliver image & deploy
 on:
   push:
     branches:
