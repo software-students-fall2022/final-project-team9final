@@ -1,5 +1,21 @@
 {% extends 'base.html' %}
 {% block container %}
+<div class = "profile-header">
+    <div class = "profile-header-block-value">
+        <form action="/profile" method="post">
+            <button class = "profile-button" name= "id" id= "id" value = "{{ creator }}">{{ creator }}</button>
+        </form>
+        <div class = "profile-header-block">
+            Creator
+        </div>
+    </div>
+    <div class = "profile-header-block-value">
+        5
+        <div class = "profile-header-block">
+            Likes
+        </div>
+    </div>
+</div>
 {% if page >0 %}
 <form action="/book" method="get">
     <button type="submit" name="page" value={{page-1}} class="prev">&laquo;</button>

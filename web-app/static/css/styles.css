@@ -253,6 +253,7 @@ input[type=text] {
 .private_button{
     display: inline-block;
     margin-top: 50px;
+    border-radius: 10%;
 }
 
 .delete_button{
@@ -261,7 +262,8 @@ input[type=text] {
     height:30px;
     margin-left: 350px;
     position:absolute;
-    margin-bottom: 20px
+    margin-bottom: 20px;
+    border-radius: 10%;
 }
 
 .share_button{
@@ -271,6 +273,7 @@ input[type=text] {
     margin-left: 450px;
     position:absolute;
     margin-bottom: 20px;
+    border-radius: 10%;
 }
 .unshare_button{
     background-color: orange;
@@ -279,6 +282,7 @@ input[type=text] {
     margin-left: 450px;
     position:absolute;
     margin-bottom: 20px;
+    border-radius: 10%;
 }
 .profile-header{
     display:flex;
@@ -299,12 +303,21 @@ input[type=text] {
     margin-left: 350px;
     margin-top:30px;
     position:absolute;
+    border-radius: 10%;
 }
 .follow-button{
     margin-top: 10px;
     font-size: 30px;
     background-color: green;
+    border-radius: 10%;
 }
+.profile-button{
+    font-size: 40px;
+    background-color: burlywood;
+    margin-top: 10px;
+    border-radius: 10%;
+}
+
 
 @keyframes flipPage
 {
