@@ -249,7 +249,7 @@ def delete():
     u = flask_login.current_user.data['firstName']
     book_id = request.form['id']
     Database.update('users', { "_id": flask_login.current_user.data["_id"] }, { "$pull": { "stories": ObjectId(book_id)} } )
-    Database.delete({"_id": ObjectId(book_id)})
+    Database.delete('books',{"_id": ObjectId(book_id)})
     books = get_private_books()
     return render_template("private.html", username = u, books = books)
 
