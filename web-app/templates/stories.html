@@ -3,6 +3,10 @@
 
 {%for book in books%}
 <div class = "private_button">
+    <form action="/profile" method="post">
+        <button class = "user-button" name= "id" id= "id" value = "{{ book.creator }}">{{ book.creator }}</button>
+    </form>
+<div class = "private_button">
 <form action="/book" method="post">
     <button class = "shared-book" name= "id" id= "id" value = "{{ book._id }}">
     <div class ="front-cover">

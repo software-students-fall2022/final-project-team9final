@@ -344,17 +344,22 @@ def updateLike():
     return jsonify(data), 200, {'Content-Type': 'application/json'}
 
 @app.route('/profile', methods = ['GET', 'POST'])
-@flask_login.login_required
 def profile():
-    u = flask_login.current_user.data['firstName']
-    user = Database.find_one('users',{"_id" : flask_login.current_user.data["_id"]})
+    u = None
+    if hasattr(flask_login.current_user, "data"):
+        u = flask_login.current_user.data['firstName']
+    username = request.form['id']
+    print(username)
+    user = Database.find_one('users',{"username" : username})
+    print(user)
     followers = list(user["followers"])
     following = list(user["following"])
-    books_result = Database.find('books',{"creator" : flask_login.current_user.data["_id"], "shared": True})
+    books_result = Database.find('books',{"creator" : username, "shared": True})
     if books_result is None:
         books=[]
     else:
         books=list(books_result)
+    
     return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_name = user["firstName"])
 
 if __name__=='__main__':
