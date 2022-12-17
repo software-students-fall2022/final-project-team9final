@@ -25,7 +25,7 @@ app.secret_key = urandom(32)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 config = dotenv_values(".env")
 
-Database.initialize(config['MONGO_URI'])
+Database.initialize(config['MONGO_URI'], config['MONGO_DBNAME'])
 
 # set up flask-login for user authentication
 login_manager = flask_login.LoginManager()
