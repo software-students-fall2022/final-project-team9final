@@ -210,7 +210,7 @@ def create_book():
     if(prompt != None):
         response = openai.Completion.create(
         model="text-davinci-003",
-        prompt=f"Give a title with a story about {prompt}",
+        prompt=f"title and a story about {prompt}",
         temperature=0.8,
         max_tokens=2048,
         top_p=1.0,
@@ -219,7 +219,6 @@ def create_book():
         )
         session["title"] = response["choices"][0]["text"].split("\n\n")[1]
         session["story"] = response["choices"][0]["text"].split("\n\n")[2:]
-
     return render_template("create_book.html", username = u, story=session["story"], title=session["title"])
 
 @app.route('/private', methods = ['GET', 'POST'])
