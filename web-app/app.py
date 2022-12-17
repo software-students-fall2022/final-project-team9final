@@ -5,7 +5,7 @@ from bson.json_util import dumps, loads
 from bson.objectid import ObjectId
 import sys
 from datetime import datetime, date, timedelta
-from dotenv import dotenv_values
+from dotenv import load_dotenv
 import certifi
 import re
 from database import Database
@@ -22,10 +22,12 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.secret_key = urandom(32)
+load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
-config = dotenv_values(".env")
 
-Database.initialize(config['MONGO_URI'], config['MONGO_DBNAME'])
+
+Database.initialize(os.getenv('MONGO_URI'), os.getenv('MONGO_DBNAME'))
+
 
 # set up flask-login for user authentication
 login_manager = flask_login.LoginManager()
@@ -178,7 +180,7 @@ def book():
 
     ID = request.form['id']
     page = request.args.get('page', default = 0, type=int)
-    
+
     response = openai.Image.create(
     prompt = session["story"][page],
     n=1,
@@ -331,5 +333,5 @@ def updateLike():
 
 if __name__=='__main__':
     #app.run(debug=True)
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 8080))
     app.run(debug=True, host='0.0.0.0', port=port)
