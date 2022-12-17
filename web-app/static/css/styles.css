@@ -150,6 +150,7 @@ body{
     border-radius: 2px 10px 10px 2px;
     transform-origin: center left;
     z-index: 1;
+    overflow:scroll;
 }
 .flip-page{
     height: 800px;

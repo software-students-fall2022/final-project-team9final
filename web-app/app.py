@@ -176,20 +176,23 @@ def book():
     if request.method == 'POST':
         book_id = request.form['id']
         book = Database.find_one('books',{"_id" : ObjectId(book_id)})
-        session["story"] = book["story"]
         session["book_id"] = book_id
-        session["creator"] = book["creator"]
+        image_urls = []
+        for sentence in book["story"]:
+            response = openai.Image.create(
+            prompt = sentence,
+            n=1,
+            size="256x256"
+            )
+            image_urls.append(response['data'][0]['url'])
+        session["image_urls"] = image_urls
 
+    book = Database.find_one("books", {"_id": ObjectId(session["book_id"])})
+    creator = book["creator"]
+    likes = book["liked"]
+    story = book["story"]
     page = request.args.get('page', default = 0, type=int)
-
-    response = openai.Image.create(
-    prompt = session["story"][page],
-    n=1,
-    size="256x256"
-    )
-    image_url = response['data'][0]['url']
-
-    return render_template("book.html", username = u, user = user, storyID = session["book_id"], url = image_url, content = session["story"][page], page = page, last_page = len(session["story"]), creator = session["creator"])
+    return render_template("book.html", username = u, user = user, storyID = session["book_id"], url = session["image_urls"][page], content = story[page], page = page, last_page = len(story), creator = creator, likes=likes)
 
 @app.route('/create-book', methods = ['GET', 'POST'])
 @flask_login.login_required
