@@ -280,6 +280,18 @@ input[type=text] {
     position:absolute;
     margin-bottom: 20px;
 }
+.profile-header{
+    display:flex;
+    justify-content: space-around;
+    background-color:blanchedalmond
+}
+.profile-header-block{
+    font-size: 25px;
+}
+.profile-header-block-value{
+    font-size: 50px;
+    font-weight:bold;
+}
 
 @keyframes flipPage
 {
