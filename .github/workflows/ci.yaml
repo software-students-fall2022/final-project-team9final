@@ -1,7 +1,14 @@
 name: ci
 on:
-  [push]
-
+  workflow_dispatch:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - 'master'
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -26,8 +33,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: .
-          file: /web-app/Dockerfile /web-app/
+          context: ./web-app
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
