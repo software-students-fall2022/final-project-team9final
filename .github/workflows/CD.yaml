@@ -1,6 +1,5 @@
 name: web-app deliver image & deploy
-on:
-  [push]
+on: [push]
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -25,13 +24,13 @@ jobs:
             push: ${{ github.event_name != 'pull_request' }}
             tags: ${{ steps.meta.outputs.tags }}
             labels: ${{ steps.meta.outputs.labels }}
-    deploy:
-        runs-on: ubuntu-latest
-        needs: dockhub_push
+  deploy:
+    runs-on: ubuntu-latest
+    needs: dockhub_push
 
-        steps:
-          - name: DigitalOcean App Platform deployment
-            uses: digitalocean/app_action@main
-            with:
-              app_name: seahorse-app
-              token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+    steps:
+        - name: DigitalOcean App Platform deployment
+          uses: digitalocean/app_action@main
+          with:
+            app_name: seahorse-app
+            token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
