@@ -30,6 +30,6 @@ jobs:
             docker login -u ${{secrets.DOCKER_USER}} -p ${{secrets.DOCKER_PASSWORD}}
       - name: Build the Docker image
         run: |
-            docker build . --file Dockerfile --tag appImage:%(date +%s)
+            docker build . --file Dockerfile --tag ${{ steps.meta.outputs.tags }} --label ${{ steps.meta.outputs.labels }}
       - name: Docker Push
         run: docker push ${{secrets.DOCKER_USER}}/se_final_project
