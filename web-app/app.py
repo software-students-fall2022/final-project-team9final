@@ -334,9 +334,9 @@ def updateLike():
     b = loads(dumps(temp))
     print(b, file=sys.stderr)
     if username in b['liked']:
-        Database.update('books',{"_id": storyID}, {'$pull': {'likes': username}})
+        Database.update('books',{"_id": storyID}, {'$pull': {'liked': username}})
     else:
-        Database.update('books',{"_id": storyID}, {'$push': {'likes': username}})
+        Database.update('books',{"_id": storyID}, {'$push': {'liked': username}})
     temp = Database.find_one('books',{"_id": storyID})
     b = loads(dumps(temp))
     num = len(b['liked'])
