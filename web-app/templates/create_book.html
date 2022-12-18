@@ -33,25 +33,3 @@
     {% endfor %}
 </div>
 {% endblock %}
-
-<script>
-    function toggle() {
-        let element = document.getElementById("adlib");
-        let element2 = document.getElementById("manual");
-        let hidden = element.getAttribute("hidden");
-
-        if (hidden) {
-        element.removeAttribute("hidden");
-        element2.setAttribute("hidden", "hidden");
-        inputSwitch.innerText = "Manual Entry";
-        } 
-        else {
-        element.setAttribute("hidden", "hidden");
-        element2.removeAttribute("hidden");
-        inputSwitch.innerText = "Ad Libs";
-        }
-    }
-
-    let inputSwitch = document.getElementById("inputSwitch");
-    inputSwitch.addEventListener("click", toggle);
-</script>
