@@ -205,10 +205,10 @@ def create_book():
         return(redirect(url_for("private")))
 
     prompt = request.args.get('prompt')
-    genre = request.args.get('genre')
-    noun = request.args.get('noun')
-    adjective = request.args.get('adjective')
-    verb = request.args.get('verb')
+    # genre = request.args.get('genre')
+    # noun = request.args.get('noun')
+    # adjective = request.args.get('adjective')
+    # verb = request.args.get('verb')
     session["story"] = ["Enter Prompt To Generate Story!"]
     session["title"] = None
     if(prompt != None):
