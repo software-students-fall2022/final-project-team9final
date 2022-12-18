@@ -314,8 +314,8 @@ def countLike():
     storyID = ObjectId(input['storyID'])
     temp = Database.find_one('books',{"_id": storyID})
     b = loads(dumps(temp))
-    num = len(b['likes'])
-    has = username in b['likes']
+    num = len(b['liked'])
+    has = username in b['liked']
     data = {
         "count" : num,
         "contains" : has,
@@ -332,14 +332,15 @@ def updateLike():
     storyID = ObjectId(input['storyID'])
     temp = Database.find_one('books',{"_id": storyID})
     b = loads(dumps(temp))
-    if username in b['likes']:
-        Database.update('books',{"_id": storyID}, {'$pull': {'likes': username}})
+    print(b, file=sys.stderr)
+    if username in b['liked']:
+        Database.update('books',{"_id": storyID}, {'$pull': {'liked': username}})
     else:
-        Database.update('books',{"_id": storyID}, {'$push': {'likes': username}})
+        Database.update('books',{"_id": storyID}, {'$push': {'liked': username}})
     temp = Database.find_one('books',{"_id": storyID})
     b = loads(dumps(temp))
-    num = len(b['likes'])
-    has = username in b['likes']
+    num = len(b['liked'])
+    has = username in b['liked']
     data = {
         "count" : num,
         "contains" : has,

@@ -58,6 +58,8 @@
             });
 
             document.getElementById('likeButton').addEventListener("click", function(evt) {
+                //console.log({{username}});
+                //console.log({{storyID}});
                 var url = prohost + 'api/updateLike';
                 var req = new XMLHttpRequest();
                 req.open('POST', url, true);
