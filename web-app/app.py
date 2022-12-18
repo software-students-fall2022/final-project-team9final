@@ -205,28 +205,12 @@ def create_book():
         return(redirect(url_for("private")))
 
     prompt = request.args.get('prompt')
-    genre = request.args.get('genre')
-    noun = request.args.get('noun')
-    adjective = request.args.get('adjective')
-    verb = request.args.get('verb')
     session["story"] = ["Enter Prompt To Generate Story!"]
     session["title"] = None
     if(prompt != None):
         response = openai.Completion.create(
         model="text-davinci-003",
         prompt=f"title and a story about {prompt}",
-        temperature=0.8,
-        max_tokens=2048,
-        top_p=1.0,
-        frequency_penalty=0.5,
-        presence_penalty=0.0
-        )
-        session["title"] = response["choices"][0]["text"].split("\n\n")[1]
-        session["story"] = response["choices"][0]["text"].split("\n\n")[2:]
-    elif(genre != None and noun != None and adjective != None and verb != None):
-        response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"Write a title and a {genre} short story about a {adjective} {noun} that {verb}",
         temperature=0.8,
         max_tokens=2048,
         top_p=1.0,

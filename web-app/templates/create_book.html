@@ -8,23 +8,11 @@
             <button type="submit" name="create-story" class="add_book">{{title}}</button>
         </form>
       {% endif %}
-      <button type="button" id="inputSwitch" class="btn">Ad Libs</button>
-      <form action="/create-book" method="get" id="manual">
-          <label class="with-top-margin" for="fname">Enter A Prompt: </label>
-          <input type="text" id="prompt" name="prompt"><br><br>
-          <input type="submit" value="Submit" class="btn">
-      </form>
-      <form action="/create-book" method="get" id="adlib" hidden>
-          <label class="with-top-margin" for="fgenre">Enter A Genre: </label>
-          <input type="text" id="genre" name="genre"><br><br>
-          <label class="with-top-margin" for="fnoun">Enter A Noun: </label>
-          <input type="text" id="noun" name="noun"><br><br>
-          <label class="with-top-margin" for="fadjective">Enter An Adjective: </label>
-          <input type="text" id="adjective" name="adjective"><br><br>
-          <label class="with-top-margin" for="fverb">Enter A Verb: </label>
-          <input type="text" id="verb" name="verb"><br><br>
-          <input type="submit" value="Submit" class="btn">
-      </form>
+        <form action="/create-book" method="get">
+            <label class="with-top-margin" for="fname">Enter A Prompt: </label>
+            <input type="text" id="prompt" name="prompt"><br><br>
+            <input type="submit" value="Submit">
+          </form>
     </div>
 </div>
 <div class = "story">
@@ -33,25 +21,3 @@
     {% endfor %}
 </div>
 {% endblock %}
-
-<script>
-    function toggle() {
-        let element = document.getElementById("adlib");
-        let element2 = document.getElementById("manual");
-        let hidden = element.getAttribute("hidden");
-
-        if (hidden) {
-        element.removeAttribute("hidden");
-        element2.setAttribute("hidden", "hidden");
-        inputSwitch.innerText = "Manual Entry";
-        } 
-        else {
-        element.setAttribute("hidden", "hidden");
-        element2.removeAttribute("hidden");
-        inputSwitch.innerText = "Ad Libs";
-        }
-    }
-
-    let inputSwitch = document.getElementById("inputSwitch");
-    inputSwitch.addEventListener("click", toggle);
-</script>
