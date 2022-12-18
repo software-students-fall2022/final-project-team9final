@@ -10,25 +10,20 @@
         </div>
     </div>
     <div class = "profile-header-block-value">
-        {{likes |length}}
-        <div class = "profile-header-block">
+        <div class = "profile-header-block-value">
+            {% if username %}
+            <div id='likeCount'></div>
+            {% else %}
+            {{likes|length}}
+            {% endif %}
+    </div>
+            <div class = "profile-header-block">
             Likes
         </div>
     </div>
-</div>
-{% if page >0 %}
-<form action="/book" method="get">
-    <button type="submit" name="page" value={{page-1}} class="prev">&laquo;</button>
-</form>
-{% endif %}
-<div class = "open-book">
-    <div class ="open-cover"></div>
-    <div class = "left-page"></div>
-    <div class = "right-page">
-        <br>
-        <h1>{{content}}</h1>
         {% if username %}
-        <button name="like" id='likeButton' class="like">like</button>
+        <div class = "profile-header-block-value">
+        <button name="like" id='likeButton' class = "follow-button">like</button>
         <div id='likeCount'></div>
         <script type="text/javascript">
             var prohost = window.location.protocol + "//" + window.location.host + '/';
@@ -41,10 +36,10 @@
                     if (req.status >= 200 && req.status < 400) {
                         var res = JSON.parse(req.responseText);
                         if (res.contains){
-                            document.getElementById('likeButton').innerHTML = 'Unlike (' + res.count + ')';
+                            document.getElementById('likeButton').innerHTML = 'Unlike';
                         }
                         else{
-                            document.getElementById('likeButton').innerHTML = 'Like (' + res.count + ')';
+                            document.getElementById('likeButton').innerHTML = 'Like';
                         }
                         document.getElementById('likeCount').innerHTML = res.count;
                     }
@@ -68,12 +63,13 @@
                     if (req.status >= 200 && req.status < 400) {
                         var res = JSON.parse(req.responseText);
                         if (res.contains){
-                            document.getElementById('likeButton').innerHTML = 'Unlike (' + res.count + ')';
+                            document.getElementById('likeButton').innerHTML = 'Unlike';
                         }
                         else{
-                            document.getElementById('likeButton').innerHTML = 'Like (' + res.count + ')';
+                            document.getElementById('likeButton').innerHTML = 'Like';
                         }
                     }
+                    document.getElementById('likeCount').innerHTML = res.count;
                 });
                 params = {
                     username: {{username|tojson}},
@@ -83,7 +79,20 @@
                 req.send(JSON.stringify(params));
             });
         </script>
-        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% if page >0 %}
+<form action="/book" method="get">
+    <button type="submit" name="page" value={{page-1}} class="prev">&laquo;</button>
+</form>
+{% endif %}
+<div class = "open-book">
+    <div class ="open-cover"></div>
+    <div class = "left-page"></div>
+    <div class = "right-page">
+        <br>
+        <h1>{{content}}</h1>
     </div>
     <div class = "flip-page">
         <img src= {{url}}>
