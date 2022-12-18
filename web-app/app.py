@@ -221,16 +221,16 @@ def create_book():
         frequency_penalty=0.5,
         presence_penalty=0.0
         )
-    elif(genre != None and noun != None and adjective != None and verb != None):
-        response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"Write a title and a {genre} short story about a {adjective} {noun} that {verb}",
-        temperature=0.8,
-        max_tokens=2048,
-        top_p=1.0,
-        frequency_penalty=0.5,
-        presence_penalty=0.0
-        )
+    # elif(genre != None and noun != None and adjective != None and verb != None):
+    #     response = openai.Completion.create(
+    #     model="text-davinci-003",
+    #     prompt=f"Write a title and a {genre} short story about a {adjective} {noun} that {verb}",
+    #     temperature=0.8,
+    #     max_tokens=2048,
+    #     top_p=1.0,
+    #     frequency_penalty=0.5,
+    #     presence_penalty=0.0
+    #     )
     session["title"] = response["choices"][0]["text"].split("\n\n")[1]
     session["story"] = response["choices"][0]["text"].split("\n\n")[2:]
     return render_template("create_book.html", username = u, story=session["story"], title=session["title"])
