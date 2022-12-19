@@ -17,6 +17,7 @@ import random
 import json
 import openai
 from flask_cors import CORS, cross_origin
+import pymongo
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -157,7 +158,21 @@ def register():
 def stories():
     u = None
     # print(flask_login.current_user, file=sys.stderr)
-    shared_books = Database.find('books',{"shared": True})
+    shared_books = list(Database.find('books',{"shared": True}))
+    shared_books.reverse()
+    view_by = request.args.get('view_by', default = "All")
+    if view_by == "Most Likes":
+        shared_books = sorted(shared_books, key = lambda x:len(x["liked"]), reverse = True)
+    elif view_by == "My Followers":
+        following = Database.find_one('users', {"username" : flask_login.current_user.data["username"]})["following"]
+        shared_books=[book for book in shared_books if book["creator"] in following]
+    elif view_by == "Most Followers":
+        users = list(set([user["creator"] for user in shared_books]))
+        users_object = list(Database.find('users', {"username": {"$in" : users}}))
+        sorted_users = sorted(users_object, key = lambda x: len(x["followers"]), reverse = True)
+        order = {key["username"]: i for i, key in enumerate(sorted_users)}
+        shared_books = sorted(shared_books, key=lambda x: order[x["creator"]])
+
 
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
