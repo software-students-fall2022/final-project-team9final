@@ -196,6 +196,7 @@ body{
     color:white;
     margin-top: 50px;
     margin-left: 200px;
+    overflow: scroll;
 }
 
 
@@ -331,6 +332,10 @@ input[type=text] {
 }
 
 .btn:hover {
+    background-color: black;
+    color: white;
+}
+button:hover{
     background-color: black;
     color: white;
 }
