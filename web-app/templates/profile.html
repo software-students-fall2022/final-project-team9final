@@ -22,7 +22,7 @@
             Following
         </div>
     </div>
-    {% if username and username != profile_username %}
+    {% if current_user and current_user != profile_username %}
     {% if username in followers %}
     <div class = "profile-header-block-value">
             <form action="/unfollow" method="post">
