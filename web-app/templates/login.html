@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block container %}
+<div class="d-flex align-items-center justify-content-center">
+            <div class="card card-container col-md-4 mx-auto" style="border-radius: 2em; text-align: center; box-shadow: 0 5px 10px rgba(0,0,0,.2); background-color: #c3dbc5">
+                <center>
+                    <h3 class="banner mt-3">
+                        Log in or Create an Account
+                    </h3>
+                    <form action="/login" method="GET">
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <ul class=flashes>
+                                {% for message in messages %}
+                                    <center>{{ message }}</center>
+                                {% endfor %}
+                                </ul>
+                            {% endif %}
+                        {% endwith %}
+                        <div className="form-group">
+                            <label for="username">Username</label>
+                            <input class="form-control col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3" type="text" name="username" placeholder="Username">
+                        </div>
+                        <div className="form-group">
+                            <label for="password">Password</label>
+                            <input class="form-control col-xs-12 col-xs-offset-0 col-sm-6 col-sm-offset-3" type="password" name="password" placeholder="Password">
+                        </div>
+                        <center>
+                            <input class="btn btn-primary mt-3" type="submit" value="Log In">
+                        </center>
+                    </form>
+                    <form class="authentication-container" action="/register" method="GET">
+                        <center>
+                            <input class="btn btn-primary mt-3 mb-4" type="submit" value="Create an Account">
+                        </center>
+                    </form>
+                </center>
+            </div>
+        </div>
+{% endblock %}

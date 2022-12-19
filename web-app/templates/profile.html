@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block container %}
+<div class = "profile-header">
+    <div class = "profile-header-block-value">
+        {{profile_username}}
+    </div>
+    <div class = "profile-header-block-value">
+        {{books|length}}
+        <div class = "profile-header-block">
+            Shared Books
+        </div>
+    </div>
+    <div class = "profile-header-block-value">
+        {{followers|length}}
+        <div class = "profile-header-block">
+            Followers
+        </div>
+    </div>
+    <div class = "profile-header-block-value">
+        {{following|length}}
+        <div class = "profile-header-block">
+            Following
+        </div>
+    </div>
+    {% if current_user and current_user != profile_username %}
+    {% if current_user in followers %}
+    <div class = "profile-header-block-value">
+            <form action="/unfollow" name = "id" id="id" value="{{profile_username}}" method="post">
+                <button class="follow-button" name= "id" id= "id" value = "{{profile_username}}">unfollow</button>
+            </form>
+    </div>
+    {% else %}
+    <div class = "profile-header-block-value">
+        <form action="/follow" name = "id" id = "id" value = "{{profile_username}}" method="post">
+            <button class="follow-button" name= "id" id= "id" value = "{{profile_username}}">follow</button>
+        </form>
+    </div>
+    {% endif %}
+    {% endif %}
+</div>
+{%for book in books%}
+<div class = "private_button">
+<form action="/book" method="post">
+    <button class = "shared-book" name= "id" id= "id" value = "{{ book._id }}">
+    <div class ="front-cover">
+        <br>
+        <h1>{{ book.title }}</h1>
+    </div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "back-cover">
+        <br><br><br><br><br>
+        <h1>READ ME!</h1>
+    </div>
+</div>
+</form>
+</div>
+{%endfor%}
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block container %}
+<div class = "profile-header">
+    <div class = "profile-header-block-value">
+            View By:
+    </div>
+    <div class = "profile-header-block-value">
+        <form action="/stories" method="get">
+            <button class="follow-button" name= "view_by" id= "view_by" value = "All">All</button>
+        </form>
+</div>
+    <div class = "profile-header-block-value">
+            <form action="/stories" method="get">
+                <button class="follow-button" name= "view_by" id= "view_by" value = "Most Likes">Most Likes</button>
+            </form>
+    </div>
+    <div class = "profile-header-block-value">
+        <form action="/stories" method="get">
+            <button class="follow-button" name= "view_by" id= "view_by" value = "Most Followers">Most Followers</button>
+        </form>
+    </div>
+{% if username %}
+    <div class = "profile-header-block-value">
+            <form action="/stories" method="get">
+                <button class="follow-button" name= "view_by" id= "view_by" value = "My Followers">My Followers</button>
+            </form>
+    </div>
+{% endif %}
+</div>
+
+{%for book in books%}
+<div class = "private_button">
+    <form action="/profile" method="post">
+        <button class = "user-button" name= "id" id= "id" value = "{{ book.creator }}">{{ book.creator }}</button>
+    </form>
+<div class = "private_button">
+<form action="/book" method="post">
+    <button class = "shared-book" name= "id" id= "id" value = "{{ book._id }}">
+    <div class ="front-cover">
+        <br>
+        <h1>{{ book.title }}</h1>
+    </div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "page"></div>
+    <div class = "back-cover">
+        <br><br><br><br><br>
+        <h1>READ ME!</h1>
+    </div>
+</div>
+</form>
+</div>
+{%endfor%}
+
+{% endblock %}

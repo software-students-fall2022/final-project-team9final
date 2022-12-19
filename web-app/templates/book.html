@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block container %}
+<div class = "profile-header">
+    <div class = "profile-header-block-value">
+        <form action="/profile" method="post">
+            <button class = "profile-button" name= "id" id= "id" value = "{{ creator }}">{{ creator }}</button>
+        </form>
+        <div class = "profile-header-block">
+            Creator
+        </div>
+    </div>
+    <div class = "profile-header-block-value">
+        <div class = "profile-header-block-value">
+            {% if username %}
+            <div id='likeCount'></div>
+            {% else %}
+            {{likes|length}}
+            {% endif %}
+    </div>
+            <div class = "profile-header-block">
+            Likes
+        </div>
+    </div>
+        {% if username %}
+        <div class = "profile-header-block-value">
+        <button name="like" id='likeButton' class = "follow-button">like</button>
+        <div id='likeCount'></div>
+        <script type="text/javascript">
+            var prohost = window.location.protocol + "//" + window.location.host + '/';
+            addEventListener("DOMContentLoaded", function(evt) {
+                var url = prohost + 'api/countLike';
+                var req = new XMLHttpRequest();
+                req.open('POST', url, true);
+                req.setRequestHeader("Content-type", "application/json");
+                req.addEventListener('load', function() {
+                    if (req.status >= 200 && req.status < 400) {
+                        var res = JSON.parse(req.responseText);
+                        if (res.contains){
+                            document.getElementById('likeButton').innerHTML = 'Unlike';
+                        }
+                        else{
+                            document.getElementById('likeButton').innerHTML = 'Like';
+                        }
+                        document.getElementById('likeCount').innerHTML = res.count;
+                    }
+                });
+                params = {
+                    username: {{username|tojson}},
+                    storyID: {{storyID|tojson}}
+                }
+                console.log(JSON.stringify(params));
+                req.send(JSON.stringify(params));
+            });
+
+            document.getElementById('likeButton').addEventListener("click", function(evt) {
+                //console.log({{username}});
+                //console.log({{storyID}});
+                var url = prohost + 'api/updateLike';
+                var req = new XMLHttpRequest();
+                req.open('POST', url, true);
+                req.setRequestHeader("Content-type", "application/json");
+                req.addEventListener('load', function() {
+                    if (req.status >= 200 && req.status < 400) {
+                        var res = JSON.parse(req.responseText);
+                        if (res.contains){
+                            document.getElementById('likeButton').innerHTML = 'Unlike';
+                        }
+                        else{
+                            document.getElementById('likeButton').innerHTML = 'Like';
+                        }
+                    }
+                    document.getElementById('likeCount').innerHTML = res.count;
+                });
+                params = {
+                    username: {{username|tojson}},
+                    storyID: {{storyID|tojson}}
+                }
+                console.log(params);
+                req.send(JSON.stringify(params));
+            });
+        </script>
+    </div>
+    {% endif %}
+</div>
+{% if page >0 %}
+<form action="/book" method="get">
+    <button type="submit" name="page" value={{page-1}} class="prev">&laquo;</button>
+</form>
+{% endif %}
+<div class = "open-book">
+    <div class ="open-cover"></div>
+    <div class = "left-page"></div>
+    <div class = "right-page">
+        <br>
+        <h1>{{content}}</h1>
+    </div>
+    <div class = "flip-page">
+        <img src= {{url}}>
+    </div>
+    <div class = "open-back-cover">
+    </div>
+</div>
+{% if page < last_page-1 %}
+<form action="/book" method="get">
+    <button type="submit" name="page" value={{page+1}} class="next">&raquo;</button>
+</form>
+{% endif %}
+
+{% endblock %}

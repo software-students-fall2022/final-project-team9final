@@ -1,0 +1,352 @@
+body{
+    background-color: beige;
+    font-family: fantasy;
+}
+.shared-book{
+    display: inline-block;
+    align-items: center;
+    text-align: center;
+    margin-left: 300px;
+    margin-right: 250px;
+    margin-top: 50px;
+    margin-bottom: 300px;
+    cursor: pointer;
+    transform: translate(8px)
+}
+.shared-book:hover .front-cover{
+    transform: rotateX(10deg) rotateY(-180deg);
+}
+.shared-book:hover .page{
+    transform: rotateX(10deg) rotateY(-180deg);
+    z-index: 2;
+}
+.front-cover{
+    z-index: 1;
+    transition:all 2s;
+}
+.front-cover h1{
+    font-size: 30px;
+}
+.back-cover{
+    z-index: -2;
+}
+.front-cover,
+.back-cover{
+    height:300px;
+    width: 260px;
+    background: #654321;
+    border-radius: 2px 20px 20px 2px;
+    position: absolute;
+    box-shadow: 1px 1px 10px gray;
+    transform: rotateX(10deg);
+    color:white;
+    transform-origin: center left;
+}
+
+.page,
+.last-page{
+    height: 280px;
+    width: 250px;
+    background: whitesmoke;
+    position: absolute;
+    border-radius: 2px 10px 10px 2px;
+    transform: rotateX(10deg);
+    transform-origin: center left;
+    z-index: -1;
+}
+
+
+.front-cover img{
+    width: 220px;
+    display: block;
+    margin: 20px auto;
+    position: relative;
+    z-index: 1;
+}
+
+.page:nth-child(2){
+    transition-duration: 2s;
+}
+.page:nth-child(3){
+    transition-duration: 1.6s;
+}
+.page:nth-child(4){
+    transition-duration: 1.2s;
+}
+.page:nth-child(5){
+    transition-duration: 0.8s;
+}
+.page:nth-child(6){
+    transition-duration: 0.4s;
+}
+.shared-book:hover .page:nth-child(2){
+    transition-duration: 4s;
+}
+.shared-book:hover .page:nth-child(3){
+    transition-duration: 3.6s;
+}
+.shared-book:hover .page:nth-child(4){
+    transition-duration: 3.2s;
+}
+.shared-book:hover .page:nth-child(5){
+    transition-duration: 2.8s;
+}
+.shared-book:hover .page:nth-child(6){
+    transition-duration: 2.4s;
+}
+
+.open-book{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    margin-left: 300px;
+    margin-right: 250px;
+    margin-top: 50px;
+    margin-bottom: 300px;
+    cursor: default;
+}
+
+.open-cover{
+    height: 850px;;
+    width: 700px;
+    background: #654321;
+    border-radius: 20px 2px 2px 20px;
+    position: relative;
+    box-shadow: 1px 1px 10px gray;
+    transform: rotateX(10deg);
+    color:white;
+    z-index: -1;
+}
+.open-back-cover{
+    height: 850px;;
+    width: 700px;
+    background: #654321;
+    border-radius: 2px 20px 20px 2px;
+    position: relative;
+    box-shadow: 1px 1px 10px gray;
+    transform: rotateX(10deg);
+    color:white;
+    transform-origin: center left;
+    z-index: -1;
+}
+.left-page{
+    height: 800px;
+    width: 600px;
+    margin-left:75px;
+    background: whitesmoke;
+    position: absolute;
+    border-radius: 10px 2px 2px 10px;
+    z-index: 1;
+}
+
+
+.right-page{
+    height: 800px;
+    width: 600px;
+    margin-left: 680px;
+    background: whitesmoke;
+    position: absolute;
+    border-radius: 2px 10px 10px 2px;
+    transform-origin: center left;
+    z-index: 1;
+    overflow:scroll;
+}
+.flip-page{
+    height: 800px;
+    width: 600px;
+    margin-left: 680px;
+    background: whitesmoke;
+    position: absolute;
+    border-radius: 2px 10px 10px 2px;
+    transform-origin: center left;
+    z-index: 2;
+}
+
+
+.flip-page{
+    animation-name:flipPage;
+    animation-duration: 4s;
+    animation-fill-mode: forwards;
+}
+.flip-page img{
+    width: 500px;
+    display: block;
+    margin: 150px auto;
+    z-index: 1;
+    animation: 1s delay;
+    animation-fill-mode: forwards;
+    transform: scaleX(-1);
+    visibility: hidden;
+}
+.close-book{
+    align-items: center;
+    text-align: center;
+    cursor: default;
+}
+
+.close-front-cover{
+    height:850px;
+    width: 700px;
+    background: #654321;
+    border-radius: 2px 20px 20px 2px;
+    position: relative;
+    box-shadow: 1px 1px 10px gray;
+    transform: rotateX(10deg);
+    color:white;
+    margin-top: 50px;
+    margin-left: 200px;
+    overflow: scroll;
+}
+
+
+.with-top-margin{
+    margin-top: 50px;
+}
+
+input[type=text] {
+    width: 90%;
+    padding: 12px 20px;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+.story{
+    width:40%;
+    position:absolute;
+    right:100px;
+    top:100px;
+    font-size:27px;
+    overflow:scroll;
+    height: 850px;
+    line-height:50px;
+    text-overflow:ellipsis;
+}
+
+.like {
+    border-radius: 30%;
+    position:absolute;
+    text-decoration: none;
+    font-size:50px;
+}
+
+.next{
+    border-radius: 30%;
+    position:absolute;
+    right:100px;
+    text-decoration: none;
+    font-size:150px;
+    top:400px;
+}
+.prev{
+    border-radius: 30%;
+    position:absolute;
+    left:100px;
+    text-decoration: none;
+    font-size:150px;
+    top:400px;
+}
+.add_book{
+    width : 90%;
+    margin-top: 20px;
+    font-size: 50px;
+    background-color: burlywood;
+}
+.private_button{
+    display: inline-block;
+    margin-top: 50px;
+    border-radius: 10%;
+}
+
+.delete_button{
+    background-color: red;
+    width: 100px;
+    height:30px;
+    margin-left: 350px;
+    position:absolute;
+    margin-bottom: 20px;
+    border-radius: 10%;
+}
+
+.share_button{
+    background-color: green;
+    width: 100px;
+    height:30px;
+    margin-left: 450px;
+    position:absolute;
+    margin-bottom: 20px;
+    border-radius: 10%;
+}
+.unshare_button{
+    background-color: orange;
+    width: 100px;
+    height:30px;
+    margin-left: 450px;
+    position:absolute;
+    margin-bottom: 20px;
+    border-radius: 10%;
+}
+.profile-header{
+    display:flex;
+    justify-content: space-evenly;
+    background-color:blanchedalmond;
+}
+.profile-header-block{
+    font-size: 25px;
+}
+.profile-header-block-value{
+    font-size: 50px;
+    font-weight:bold;
+}
+.user-button{
+    background-color: brown;
+    width: 200px;
+    height:40px;
+    margin-left: 350px;
+    margin-top:30px;
+    position:absolute;
+    border-radius: 10%;
+}
+.follow-button{
+    margin-top: 10px;
+    font-size: 30px;
+    background-color: green;
+    border-radius: 10%;
+}
+.profile-button{
+    font-size: 40px;
+    background-color: burlywood;
+    margin-top: 10px;
+    border-radius: 10%;
+}
+.btn {
+    background-color: #f1f1f1;
+    color: black;
+    font-size: 10px;
+    padding: 10px 25px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+    font-family: fantasy;
+}
+
+.btn:hover {
+    background-color: black;
+    color: white;
+}
+button:hover{
+    background-color: black;
+    color: white;
+}
+
+
+@keyframes flipPage
+{
+    from { transform: rotateX(0deg) rotateY(0deg);}
+    to { transform: rotateX(10deg) rotateY(-180deg);}
+ }
+ @keyframes delay {
+    99% {visibility: hidden;}
+    100% {visibility: visible;}
+  }
