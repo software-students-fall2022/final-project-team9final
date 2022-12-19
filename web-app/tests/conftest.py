@@ -29,12 +29,10 @@ def app_with_book(app_with_data):
 @pytest.fixture(scope='session')
 def app_with_followers(app_with_data):
     hashed_password = generate_password_hash("foo")
-    Database.insert_one('users', {"username": "foo", 'firstName': "foo", 'lastName': "foo", "password": hashed_password, "stories":[], "followers":['bar'],"following":[]})
+    Database.insert_one('users', {"username": "foo", 'firstName': "foo", 'lastName': "foo", "password": hashed_password, "stories":[], "followers":[],"following":['bar']})
 
     hashed_password = generate_password_hash("bar")
-    Database.insert_one('users', {"username": "bar", 'firstName': "bar", 'lastName': "bar", "password": hashed_password, "stories":[], "followers":[],"following":['foo']})
-    # Database.update('users',{"username": "test"}, {'$set' : {'following' : ['Santa Claus']}})
-    # Database.update('users',{"username": "Santa Claus"}, {'$set' : {'followers' : ['test']}})
+    Database.insert_one('users', {"username": "bar", 'firstName': "bar", 'lastName': "bar", "password": hashed_password, "stories":[], "followers":['foo'],"following":[]})
     yield app_with_data, Database
 
 # @pytest.fixture(scope='session')

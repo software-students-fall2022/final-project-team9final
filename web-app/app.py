@@ -388,10 +388,16 @@ def follow():
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
         un = flask_login.current_user.data["username"]
-    username = request.form['id']
-    print(username)
-    Database.update('users',{"username" : username},{'$push' : {'followers' : flask_login.current_user.data['username']}} )
-    Database.update('users',{"username" : flask_login.current_user.data['username']},{'$push' : {'following' : username}} )
+
+    if app.config['TESTING'] is True:
+        curr_user = request.form['c_username']
+        username = request.form['id']
+        Database.update('users',{"username" : username},{'$push' : {'followers' : curr_user}})
+        Database.update('users',{"username" : curr_user},{'$push' : {'following' : username}})
+    else:
+        username = request.form['id']
+        Database.update('users',{"username" : username},{'$push' : {'followers' : flask_login.current_user.data['username']}})
+        Database.update('users',{"username" : flask_login.current_user.data['username']},{'$push' : {'following' : username}})
 
     user = Database.find_one('users',{"username" : username})
     followers = list(user["followers"])
@@ -410,10 +416,16 @@ def unfollow():
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
         un = flask_login.current_user.data["username"]
-    username = request.form['id']
-    print(username)
-    Database.update('users',{"username" : username},{'$pull' : {'followers' : flask_login.current_user.data['username']}} )
-    Database.update('users',{"username" : flask_login.current_user.data['username']},{'$pull' : {'following' : username}} )
+        
+    if app.config['TESTING'] is True:
+        curr_user = request.form['c_username']
+        username = request.form['id']
+        Database.update('users',{"username" : username},{'$pull' : {'followers' : curr_user}})
+        Database.update('users',{"username" : curr_user},{'$pull' : {'following' : username}})
+    else:
+        username = request.form['id']
+        Database.update('users',{"username" : username},{'$pull' : {'followers' : flask_login.current_user.data['username']}})
+        Database.update('users',{"username" : flask_login.current_user.data['username']},{'$pull' : {'following' : username}})
 
     user = Database.find_one('users',{"username" : username})
     followers = list(user["followers"])
