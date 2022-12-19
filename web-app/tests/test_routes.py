@@ -51,19 +51,19 @@ def test_unshare(app_with_book):
     response = app.post(url,data={'id':id})
     assert response.status_code == 200
 
-# def test_countLike(app_with_book):
-#     url='/api/countLike'
-#     app = app_with_book[0]
-#     id = app_with_book[1]
-#     response = app.post(url,data={'username':"test",'storyId':id})
-#     assert response.status_code == 200
+def test_countLike(app_with_book):
+    url='/api/countLike'
+    app = app_with_book[0]
+    id = str(app_with_book[1])
+    response = app.post(url,json={"username":"test","storyID":id})
+    assert response.status_code == 200
 
-# def test_updateLike(app_with_book):
-#     url='/api/updateLike'
-#     app = app_with_book[0]
-#     id = app_with_book[1]
-#     response = app.post(url,data={'username':"test",'storyId':id})
-#     assert response.status_code == 200
+def test_updateLike(app_with_book):
+    url='/api/updateLike'
+    app = app_with_book[0]
+    id = str(app_with_book[1])
+    response = app.post(url,json={'username':"test",'storyID':id})
+    assert response.status_code == 200
 
 def test_delete(app_with_book):
     url='/delete'
@@ -92,3 +92,49 @@ def test_register(app_with_database):
     response = app_with_database.get(response.request.path, query_string={'username': 'Santa Claus', 'password': 'Christmas'}, follow_redirects = True)
     assert response.status_code == 200
     assert response.request.path == '/stories'
+
+def test_profile(app_with_followers):
+    url='/profile'
+    app = app_with_followers[0]
+    # id = app_with_followers[1]
+    response = app.post(url, data={'id': 'test'})
+    assert response.status_code == 200
+
+def test_follow(app_with_book):
+    url='/follow'
+    app = app_with_book[0]
+    db = app_with_book[2]
+    response = app.post(url, data={'id': 'Santa Claus'})
+    assert response.status_code == 200
+    # user = db.find_one('users',{"username" : 'test'})
+    # followers = list(user["followers"])
+    # following = list(user["following"])
+    # assert len(followers) == 0
+    # assert len(following) == 1
+
+def test_unfollow(app_with_followers):
+    url='/unfollow'
+    app = app_with_followers[0]
+    db = app_with_followers[1]
+
+    # user = db.find_one('users',{"username" : 'foo'})
+    # followers2 = list(user["followers"])
+    # assert len(followers2) == 1
+
+    response = app.post(url, data={'id': 'bar'})
+    # response = app.post(url, data={'id': 'Santa Claus'})
+    # response = app.post(url, data={'id': 'test'})
+    assert response.status_code == 200
+
+    # user = db.find_one('users',{"username" : 'foo'})
+    # followers = list(user["followers"])
+    # following = list(user["following"])
+
+    # user2 = db.find_one('users', {'username': 'bar'})
+    # followers2 = list(user2['followers'])
+    # following2 = list(user2['following'])
+
+    # assert len(followers) == 0
+    # assert len(following) == 0
+    # assert len(followers2) == 0
+    # assert len(following2) == 0
