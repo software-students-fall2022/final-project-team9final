@@ -1,8 +1,17 @@
 ![web-app](https://github.com/software-students-fall2022/final-project-team9final/actions/workflows/build.yaml/badge.svg)
+![web-app](https://github.com/software-students-fall2022/final-project-team9final/actions/workflows/cd.yaml/badge.svg)
 
 ## Introduction
 
 This web application allows users to create stories based on a random prompt given by the users. The created stories can be saved in individual personalized collections or be shared for other users to read and like. An image is created on demand for each paragraph of a story, creating a storybook-like reading experience.
+
+## Deployed Web-App
+
+[App](https://seahorse-app-q8zvt.ondigitalocean.app/)
+
+## Container Images on DockerHub
+
+[DockerHub](https://hub.docker.com/r/bchen00/se_final_project)
 
 ## SetUp
 
@@ -18,9 +27,9 @@ This web application allows users to create stories based on a random prompt giv
 
 ## Run the Project
 
-1. The current port that the containers use for the app is 5000. Verify that no other app is running on that port before running the project.
+1. The current port that the containers use for the app is 8080. Verify that no other app is running on that port before running the project.
 2. At the root folder of the project run using the command `docker compose up`
-3. Head to [localhost](http://127.0.0.1:5000/) to register as a new user
+3. Head to [localhost](http://127.0.0.1:8080/) to register as a new user
 4. After registration log in to experience all the functionality of the application.
 
 ## Run the Project Without Containers
