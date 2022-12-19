@@ -1,5 +1,32 @@
 {% extends 'base.html' %}
 {% block container %}
+<div class = "profile-header">
+    <div class = "profile-header-block-value">
+            View By:
+    </div>
+    <div class = "profile-header-block-value">
+        <form action="/stories" method="get">
+            <button class="follow-button" name= "view_by" id= "view_by" value = "All">All</button>
+        </form>
+</div>
+    <div class = "profile-header-block-value">
+            <form action="/stories" method="get">
+                <button class="follow-button" name= "view_by" id= "view_by" value = "Most Likes">Most Likes</button>
+            </form>
+    </div>
+    <div class = "profile-header-block-value">
+        <form action="/stories" method="get">
+            <button class="follow-button" name= "view_by" id= "view_by" value = "Most Followers">Most Followers</button>
+        </form>
+    </div>
+{% if username %}
+    <div class = "profile-header-block-value">
+            <form action="/stories" method="get">
+                <button class="follow-button" name= "view_by" id= "view_by" value = "My Followers">My Followers</button>
+            </form>
+    </div>
+{% endif %}
+</div>
 
 {%for book in books%}
 <div class = "private_button">
