@@ -8,12 +8,26 @@
             <button type="submit" name="create-story" class="add_book">{{title}}</button>
         </form>
       {% endif %}
-        <form action="/create-book" method="get">
+        <!--<button type="button" id="inputSwitch" class="btn">Ad Libs</button>!-->
+        <form action="/create-book" method="get" id="manual">
             <label class="with-top-margin" for="fname">Enter A Prompt: </label>
             <input type="text" id="prompt" name="prompt"><br><br>
-            <input type="submit" value="Submit">
-          </form>
-    </div>
+            <input type="submit" value="Submit" class="btn">
+        </form>
+        <br>
+        <form action="/create-book" method="get" id="adlib">
+            <label class="" for="fgenre">Enter A Genre: </label>
+            <input type="text" id="genre" name="genre"><br><br>
+            <label class="" for="fnoun">Enter A Noun: </label>
+            <input type="text" id="noun" name="noun"><br><br>
+            <label class="" for="fadjective">Enter An Adjective: </label>
+            <input type="text" id="adjective" name="adjective"><br><br>
+            <label class="" for="fverb">Enter A Verb: </label>
+            <input type="text" id="verb" name="verb"><br><br>
+            <input type="submit" value="Submit" class="btn">
+        </form>
+  </div>
+</div>
 </div>
 <div class = "story">
     {% for sentence in story %}
