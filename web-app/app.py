@@ -376,7 +376,7 @@ def profile():
         books=[]
     else:
         books=list(books_result)
-    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["username"])
+    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["username"], current_user = flask_login.current_user.data["username"])
 
 @app.route('/follow', methods = ['GET', 'POST'])
 def follow():
