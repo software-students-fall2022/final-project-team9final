@@ -24,7 +24,18 @@ def app_with_data(app_with_database):
 def app_with_book(app_with_data):
     _id = Database.insert_one('books',{"title": "test", 'story': ["test"], 'shared' : False, 'liked' : []})
     Database.update('users',{"username": "test"}, {'$push' : {'stories' : ObjectId(_id.inserted_id)}})
-    yield app_with_data, _id.inserted_id
+    yield app_with_data, _id.inserted_id, Database
+
+@pytest.fixture(scope='session')
+def app_with_followers(app_with_data):
+    hashed_password = generate_password_hash("foo")
+    Database.insert_one('users', {"username": "foo", 'firstName': "foo", 'lastName': "foo", "password": hashed_password, "stories":[], "followers":['bar'],"following":[]})
+
+    hashed_password = generate_password_hash("bar")
+    Database.insert_one('users', {"username": "bar", 'firstName': "bar", 'lastName': "bar", "password": hashed_password, "stories":[], "followers":[],"following":['foo']})
+    # Database.update('users',{"username": "test"}, {'$set' : {'following' : ['Santa Claus']}})
+    # Database.update('users',{"username": "Santa Claus"}, {'$set' : {'followers' : ['test']}})
+    yield app_with_data, Database
 
 # @pytest.fixture(scope='session')
 # def book_id(app_with_data):
