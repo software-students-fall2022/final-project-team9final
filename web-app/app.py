@@ -365,8 +365,11 @@ def updateLike():
 @app.route('/profile', methods = ['GET', 'POST'])
 def profile():
     u = None
+    un = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
+        un = flask_login.current_user.data['username']
+
     username = request.form['id']
     user = Database.find_one('users',{"username" : username})
     followers = list(user["followers"])
@@ -376,13 +379,15 @@ def profile():
         books=[]
     else:
         books=list(books_result)
-    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["username"], current_user = flask_login.current_user.data["username"])
+    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["username"], current_user = un)
 
 @app.route('/follow', methods = ['GET', 'POST'])
 def follow():
     u = None
+    un = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
+        un = flask_login.current_user.data["username"]
 
     if app.config['TESTING'] is True:
         curr_user = request.form['c_username']
@@ -402,14 +407,16 @@ def follow():
         books=[]
     else:
         books=list(books_result)
-    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["firstName"])
+    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["username"],current_user = un)
 
 @app.route('/unfollow', methods = ['GET', 'POST'])
 def unfollow():
     u = None
+    un = None
     if hasattr(flask_login.current_user, "data"):
         u = flask_login.current_user.data['firstName']
-    
+        un = flask_login.current_user.data["username"]
+        
     if app.config['TESTING'] is True:
         curr_user = request.form['c_username']
         username = request.form['id']
@@ -428,7 +435,7 @@ def unfollow():
         books=[]
     else:
         books=list(books_result)
-    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["firstName"])
+    return render_template("profile.html", username = u, books = books, followers = followers, following = following, profile_username = user["username"], current_user = un)
 
 if __name__=='__main__':
     #app.run(debug=True)
